@@ -1,0 +1,50 @@
+@extends('frontend.layouts.master') 
+@section('content') 
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Start Faq
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+@php
+    $lang = selectedLang();
+    $faq_slug = Illuminate\Support\Str::slug(App\Constants\SiteSectionConst::FAQ_SECTION);
+    $faq = App\Models\Admin\SiteSections::getData( $faq_slug)->first();
+@endphp
+@foreach ($page_section->sections ?? [] as $item)
+
+        @if ( $item->section->key == 'about-page-section')
+            @include('frontend.sections.about-page-section')
+        @elseif($item->section->key == 'announcement-section')
+            @include('frontend.sections.announcement-section')
+        @elseif($item->section->key == 'app-section')
+            @include('frontend.sections.app-section')
+        @elseif($item->section->key == 'banner-section')
+            @include('frontend.sections.banner-section')
+        @elseif($item->section->key == 'brand-section')
+            @include('frontend.sections.brand-section')
+         @elseif($item->section->key == 'client-feedback-section')
+            @include('frontend.sections.client-feedback-section')
+         @elseif($item->section->key == 'contact-us-section')
+            @include('frontend.sections.contact-us-section')
+        @elseif($item->section->key == 'faq-section')
+            @include('frontend.sections.faq-section')
+        @elseif($item->section->key == 'feature-section')
+            @include('frontend.sections.feature-section')
+        @elseif($item->section->key == 'glance-section')
+            @include('frontend.sections.glance-section')
+        @elseif($item->section->key == 'security-system-section')
+            @include('frontend.sections.security-system-section')
+        @elseif($item->section->key == 'service-page-section')
+            @include('frontend.sections.service-page-section')
+        @elseif($item->section->key == 'why-choose-us-section')
+            @include('frontend.sections.why-choose-us-section')
+        @endif
+        
+    @endforeach
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    End faq
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+@endsection
+
+
+@push("script")
+
+@endpush
