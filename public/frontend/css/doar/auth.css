@@ -1,0 +1,332 @@
+/* Login DOAR - Estilos según prototipo (fondo blanco, colores primarios/terciarios del diseño) */
+.login-doar-section {
+    position: relative;
+    background-color: #FFFFFF;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+}
+.login-doar-section::before {
+    content: '';
+    position: absolute;
+    bottom: -120px;
+    width: 120%;
+    height: 70%;
+    background: url('../../user/vector.svg') no-repeat left bottom / contain;
+    z-index: 0;
+}
+.login-doar-section > .container {
+    position: relative;
+    z-index: 1;
+}
+.login-doar-section .login-promo {
+    padding-right: 2rem;
+}
+.login-doar-section .login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+}
+.login-doar-section .login-logo img {
+    max-height: 140px;
+    width: auto;
+    display: block;
+}
+
+.login-doar-section .login-slogan {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+}
+.login-doar-section .login-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.login-doar-section .login-benefits li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 1.25rem;
+    color: #374151;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+.login-doar-section .login-benefits li i {
+    color: #EA580C;
+    font-size: 1.25rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+.login-doar-section .login-benefits li strong {
+    color: #1F2937;
+}
+/* Onda decorativa izquierda */
+.login-doar-section .login-promo-wrap {
+    position: relative;
+}
+
+.login-doar-section .login-promo {
+    position: relative;
+    z-index: 1;
+}
+/* Card del formulario */
+.login-doar-section .login-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    padding: 3.5rem 2.5rem 3.5rem 2.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.login-doar-section .login-card .form-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 0.35rem;
+}
+.login-doar-section .login-card .form-subtitle {
+    font-size: 0.95rem;
+    color: #6B7280;
+    margin-bottom: 1.75rem;
+}
+/* Inputs con icono izquierdo */
+.login-doar-section .input-icon-wrap {
+    position: relative;
+}
+.login-doar-section .input-icon-wrap .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 2;
+}
+.login-doar-section .input-icon-wrap .form-control {
+    padding-left: 44px;
+    height: 48px;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #1F2937;
+    background: #FFFFFF;
+}
+.login-doar-section .input-icon-wrap .form-control::placeholder {
+    color: #9CA3AF;
+}
+.login-doar-section .input-icon-wrap .form-control:focus {
+    border-color: #EA580C;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+    outline: none;
+}
+.login-doar-section .form-group label.input-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+/* Password con ojo */
+.login-doar-section .show_hide_password {
+    position: relative;
+}
+.login-doar-section .show_hide_password .form-control {
+    padding-right: 48px;
+}
+.login-doar-section .show_hide_password .show-pass {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 2;
+    text-decoration: none;
+}
+.login-doar-section .show_hide_password .show-pass:hover {
+    color: #EA580C;
+}
+/* Enlace ¿Olvidaste tu contraseña? */
+.login-doar-section .forgot-link {
+    color: #CDA705;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+.login-doar-section .forgot-link:hover {
+    color: #C2410C;
+    text-decoration: underline;
+}
+/* Botón principal */
+.login-doar-section .btn-login-doar {
+    width: 100%;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #FFB541 0%, #FCCC01 100%);
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+    transition: opacity 0.2s, transform 0.2s;
+}
+.login-doar-section .btn-login-doar:hover {
+    color: #fff;
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+/* Enlaces secundarios (registro, términos) */
+.login-doar-section .login-card .text-muted-doar {
+    color: #6B7280;
+    font-size: 0.9rem;
+}
+.login-doar-section .login-card .link-doar {
+    color: #CDA705;
+    font-weight: 500;
+    text-decoration: underline;
+}
+.login-doar-section .login-card .link-doar:hover {
+    color: #C2410C;
+}
+.login-doar-section .terms-checkbox {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 6px;
+    vertical-align: middle;
+    accent-color: #EA580C;
+    cursor: pointer;
+}
+.login-doar-section .terms-label {
+    display: inline;
+    vertical-align: middle;
+}
+@media (max-width: 991px) {
+    .login-doar-section .login-promo-wrap {
+        display: none;
+    }
+    .login-doar-section .login-card {
+        margin: 0 auto;
+        max-width: 440px;
+    }
+}
+
+/* ========== Modal DOAR: Recuperar contraseña ========== */
+.doar-forgot-modal .modal-dialog {
+    max-width: 648px;
+    max-height: 596px;
+}
+.doar-forgot-modal__content {
+    background: #31374F;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+}
+.doar-forgot-modal__header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    background-color: #31374F;
+    border-bottom: none;
+}
+.doar-forgot-modal__title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+.doar-forgot-modal__close {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background-color: transparent !important;
+    background-image: url('../../user/close.svg') !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+    opacity: 1;
+}
+.doar-forgot-modal__close:hover {
+    opacity: 0.85;
+}
+/* Ocultar la X por defecto de Bootstrap para mostrar solo el SVG */
+.doar-forgot-modal__close::before {
+    display: none !important;
+}
+.doar-forgot-modal__body {
+    padding: 4rem 4rem 4rem 4rem;
+    color: #FFFFFF;
+}
+.doar-forgot-modal__text {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+}
+.doar-forgot-modal__input-wrap {
+    position: relative;
+}
+.doar-forgot-modal__input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 2;
+}
+.doar-forgot-modal__input {
+    padding-left: 44px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: #1F2937;
+    font-size: 0.95rem;
+}
+.doar-forgot-modal__input::placeholder {
+    color: #9CA3AF;
+}
+.doar-forgot-modal__input:focus {
+    border-color: #FCCC01;
+    box-shadow: 0 0 0 3px rgba(252, 204, 1, 0.25);
+    outline: none;
+}
+.doar-forgot-modal__btn {
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #FFB541 0%, #FCCC01 100%);
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+    transition: opacity 0.2s, transform 0.2s;
+}
+.doar-forgot-modal__btn:hover {
+    color: #fff;
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+.doar-forgot-modal__back-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+.doar-forgot-modal__back-link:hover {
+    color: #FCCC01;
+}
+.doar-forgot-modal .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+}

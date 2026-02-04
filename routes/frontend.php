@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\Frontend\IndexController;
 
+/*
+| Rutas auxiliares del sitio público (frontend): subscribe, contact/message, languages/switch.
+| Rutas de documentación developer: /developer/prerequisites, /developer/authentication, etc.
+*/
 Route::name('frontend.')->group(function() {
     Route::controller(IndexController::class)->group(function() {
         Route::post("subscribe","subscribe")->name("subscribe");

@@ -1,20 +1,35 @@
 <?php
 
-use App\Http\Controllers\Admin\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\Auth\ForgotPasswordController;
+use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\User\AuthorizationController;
+use App\Http\Controllers\User\Auth\SocialAuthentication;
 use App\Http\Controllers\Admin\Auth\ResetPasswordController;
-use App\Http\Controllers\User\Auth\ForgotPasswordController as UserForgotPasswordController;
+use App\Http\Controllers\Admin\Auth\ForgotPasswordController;
 use App\Http\Controllers\User\Auth\LoginController as UserLoginController;
 use App\Http\Controllers\User\Auth\RegisterController as UserRegisterController;
-use App\Http\Controllers\User\Auth\SocialAuthentication;
-use App\Http\Controllers\User\AuthorizationController;
-use App\Http\Controllers\Merchant\AuthorizationController as MerchantAuthorizationController;
 use App\Http\Controllers\Merchant\Auth\LoginController as MerchantLoginController;
 use App\Http\Controllers\Merchant\Auth\RegisterController as MerchantRegisterController;
+use App\Http\Controllers\User\Auth\ForgotPasswordController as UserForgotPasswordController;
+use App\Http\Controllers\Merchant\AuthorizationController as MerchantAuthorizationController;
 use App\Http\Controllers\Merchant\Auth\ForgotPasswordController as MerchantForgotPasswordController;
 
-
+/*
+|--------------------------------------------------------------------------
+| Auth Routes - Login público del sitio (usuarios)
+|--------------------------------------------------------------------------
+|
+| Rutas de autenticación para usuarios del sitio público (no admin).
+| La ruta (/) redirige aquí (user.login) por defecto.
+|
+| URLs principales:
+|   /login       → Login público (user.login) — entrada por defecto del sitio.
+|   /user        → Redirige a /login.
+|   /register    → Registro de usuarios (user.register).
+|   /password/forgot → Recuperar contraseña (user.password.forgot).
+|   /oauth/google, /oauth/facebook → Login social.
+|
+*/
 Route::name('user.')->group(function(){
     Route::get('/user',function(){
         return redirect()->route('user.login');

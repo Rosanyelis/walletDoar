@@ -1,81 +1,127 @@
-@extends('frontend.layouts.master')
+@extends('user.layouts.layoutweb')
 @php
     $lang = selectedLang();
     $auth_slug = Illuminate\Support\Str::slug(App\Constants\SiteSectionConst::AUTH_SECTION);
     $auth_text = App\Models\Admin\SiteSections::getData($auth_slug)->first();
+    $login_title = @$auth_text->value->language->$lang->login_title ?: __('Bienvenido de nuevo');
+    $login_subtitle = @$auth_text->value->language->$lang->login_text ?: __('Ingresa a tu cuenta');
 @endphp
+
+@push('css')
+    <link rel="stylesheet" href="{{ asset('frontend/css/doar/auth.css') }}">
+@endpush
+
 @section('content')
-    <section class="account-section ptb-80">
+    <section class="login-doar-section">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-10 col-md-12">
-                    <div class="account-area">
-                        <div class="row align-items-center justify-content-center">
-                            <div class="col-lg-6 col-md-6 mb-30 account-img">
-                                <div class="account-item-img">
-                                    <img src="{{ get_image($auth_text->value->image ?? '', 'site-section') ?? get_image('frontend/images/element/account-img.webp') }}"
-                                        alt="img">
+            <div class="row align-items-center justify-content-center">
+                {{-- Columna izquierda: promocional --}}
+                <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                    <div class="login-promo-wrap">
+                        <div class="login-promo">
+                            <div class="login-logo text--base">
+                                <img src="{{ get_logo($basic_settings) }}" alt="logo">
+                            </div>
+                            <h1 class="login-slogan ">{{ __('Tu plata al instante') }}</h1>
+                            <ul class="login-benefits">
+                                <li>
+                                    <i class="fas fa-bolt"></i>
+                                    <span>{{ __('Envía y recibe dinero en') }} <strong>{{ __('minutos') }}</strong>.</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>{{ __('Retira directo a tu') }} <strong>{{ __('cuenta bancaria') }}</strong>.</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>{{ __('Seguridad financiera de') }} <strong>{{ __('última tecnología') }}</strong>.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Columna derecha: formulario --}}
+                <div class="col-lg-5 col-md-8">
+                    <div class="login-card">
+                        <form action="{{ setRoute('user.login.submit') }}" method="POST">
+                            @csrf
+                            <h2 class="form-title text-center">{{ $login_title }}</h2>
+                            <p class="form-subtitle text-center">{{ $login_subtitle }}</p>
+                            @php
+                                $email_demo = (env('APP_MODE') == 'demo') ? 'user@appdevs.net' : '';
+                                $pass_demo = (env('APP_MODE') == 'demo') ? 'appdevs' : '';
+                            @endphp
+
+                            <div class="row">
+                                <div class="col-12 form-group">
+                                    <label class="input-label">{{ __('Correo electrónico') }}</label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-envelope input-icon"></i>
+                                        <input type="text"
+                                            class="form-control form--control @error('credentials') is-invalid @enderror"
+                                            name="credentials"
+                                            value="{{ old('credentials', $email_demo) }}"
+                                            placeholder="{{ __('Correo electrónico') }}"
+                                            required
+                                            autocomplete="username">
+                                    </div>
+                                    @error('credentials')
+                                        <span class="invalid-feedback d-block" role="alert">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-12 form-group show_hide_password">
+                                    <label class="input-label">{{ __('Contraseña') }}</label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-lock input-icon"></i>
+                                        <input type="password"
+                                            class="form-control form--control"
+                                            name="password"
+                                            value="{{ $pass_demo }}"
+                                            placeholder="{{ __('Contraseña') }}"
+                                            required
+                                            autocomplete="current-password">
+                                        <a href="javascript:void(0)" class="show-pass" aria-label="{{ __('Mostrar contraseña') }}">
+                                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 form-group text-end">
+                                    <a href="javascript:void(0)" class="forgot-link" data-bs-toggle="modal" data-bs-target="#doarForgotPasswordModal">{{ __('¿Olvidaste tu contraseña?') }}</a>
+                                </div>
+
+                                <x-security.google-recaptcha-field />
+
+                                <div class="col-12 form-group">
+                                    <button type="submit" class="btn btn-login-doar">{{ __('Iniciar sesión') }}</button>
+                                </div>
+
+                                <div class="col-12 text-center pt-2">
+                                    <p class="text-muted-doar mb-1">{{ __('¿No tienes una cuenta?') }}</p>
+                                    <a href="{{ setRoute('user.register') }}" class="link-doar">{{ __('Regístrate ahora') }}</a>
+                                </div>
+
+                                <div class="col-12 text-center pt-3">
+                                    <p class="text-muted-doar mb-0 small">{{ __('Al iniciar sesión aceptas nuestros') }}</p>    
+                                    <p class="text-muted-doar mb-0 small">
+                                        <input type="checkbox" id="login-terms" name="terms_accept" class="terms-checkbox" value="1" required>
+                                        <label for="login-terms" class="terms-label">
+                                            
+                                            <a href="{{ route('page.view', 'terms-condition') }}" class="link-doar">{{ __('Términos y Condiciones') }}</a>.
+                                        </label>
+                                    </p>
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-md-8">
-                                <form action="{{ setRoute('user.login.submit') }}" class="account-form" method="POST">
-                                    @csrf
-                                    <h3 class="title">{{ @$auth_text->value->language->$lang->login_title }}</h3>
-                                    <p>{{ @$auth_text->value->language->$lang->login_text }}</p>
-                                    <div class="row">
-                                        @php
-                                            env('APP_MODE') == 'demo' ? ($email = 'user@appdevs.net') : ($email = '');
-                                            env('APP_MODE') == 'demo' ? ($password = 'appdevs') : ($password = '');
-                                        @endphp
-                                        <div class="col-lg-12 form-group">
-                                            @include('admin.components.form.input', [
-                                                'name' => 'credentials',
-                                                'placeholder' => __('Username OR Email Address'),
-                                                'required' => true,
-                                                'value' => old('email') ?? ($email ?? ''),
-                                            ])
-                                        </div>
-                                        <div class="col-lg-12 form-group show_hide_password">
-                                            <input type="password" class="form-control form--control" name="password"
-                                                value="{{ $password ?? '' }}" placeholder="{{ __('Enter Password') }}"
-                                                required>
-                                            <a href="#0" class="show-pass"><i class="fa fa-eye-slash"
-                                                    aria-hidden="true"></i></a>
-                                        </div>
-                                        <div class="col-lg-12 form-group">
-                                            <div class="forgot-item text-end">
-                                                <label><a href="{{ setRoute('user.password.forgot') }}"
-                                                        class="text--base">{{ __('Forgot Password') }}?</a></label>
-                                            </div>
-                                        </div>
-                                        <x-security.google-recaptcha-field />
-                                        <div class="col-lg-12 form-group text-center">
-                                            <button type="submit" class="btn--base w-100">{{ __('Login Now') }}</button>
-                                        </div>
-
-                                        <div class="col-lg-12 text-center">
-                                            <div class="account-item">
-                                                <label>{{ __("Don't Have An Account") }}? <a
-                                                        href="{{ setRoute('user.register') }}"
-                                                        class="account-control-btn text--base">{{ __('Register Now') }}</a></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12 text-center">
-                                            <div class="terms-item">
-                                                <label>{{ __('By clicking Login you are agreeing with our') }} <a
-                                                        href="{{ route('page.view', 'terms-condition') }}"
-                                                        class="text--base">{{ __('Terms Condition') }}.</a></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    @include('doarcomponents.forgot-password-modal')
 @endsection
 
 @push('script')

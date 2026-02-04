@@ -16,6 +16,7 @@ class RouteServiceProvider extends ServiceProvider
      * The path to the "home" route for your application.
      *
      * Typically, users are redirected here after authentication.
+     * Actualmente (/) redirige al login público del sitio (user.login). Ver routes/web.php.
      *
      * @var string
      */
