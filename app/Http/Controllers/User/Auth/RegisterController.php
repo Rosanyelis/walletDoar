@@ -95,9 +95,9 @@ class RegisterController extends Controller
     public function validator(array $data) {
 
         $basic_settings = $this->basic_settings;
-        $password_rule = "required|string|min:6";
+        $password_rule = "required|string|min:6|confirmed";
         if($basic_settings->secure_password) {
-            $password_rule = ["required",Password::min(8)->letters()->mixedCase()->numbers()->symbols()->uncompromised()];
+            $password_rule = ["required","confirmed",Password::min(8)->letters()->mixedCase()->numbers()->symbols()->uncompromised()];
         }
         if($basic_settings->agree_policy){
             $agree = 'required|in:on';

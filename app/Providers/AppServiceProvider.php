@@ -30,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Excluir login y área user del Debugbar para evitar "Attempt to read property 'cookies' on null" en redirects
+        config(['debugbar.except' => array_merge(config('debugbar.except', []), ['login', 'user/*'])]);
         Paginator::useBootstrapFive();
         if($this->app->environment('production'))
         {

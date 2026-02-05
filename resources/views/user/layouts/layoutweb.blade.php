@@ -68,19 +68,21 @@
     var s_browser      = "{{ $s_browser}}";
     var s_platform     = "{{ $s_platform}}";
     var s_agent        = "{{ $s_agent}}";
-    const pop = document.querySelector('.cookie-main-wrapper')
-    if( status == 1){
-        if(approval_status == 'allow' || approval_status == 'decline' || c_user_agent === s_agent || c_ip_address === s_ipAddress || c_browser === s_browser || c_platform === s_platform){
-            pop.style.bottom = "-300px";
+    const pop = document.querySelector('.cookie-main-wrapper');
+    if (pop) {
+        if( status == 1){
+            if(approval_status == 'allow' || approval_status == 'decline' || c_user_agent === s_agent || c_ip_address === s_ipAddress || c_browser === s_browser || c_platform === s_platform){
+                pop.style.bottom = "-300px";
+            }else{
+                window.onload = function(){
+                    setTimeout(function(){
+                        pop.style.bottom = "20px";
+                    }, 2000);
+                }
+            }
         }else{
-            window.onload = function(){
-            setTimeout(function(){
-                pop.style.bottom = "20px";
-            }, 2000)
+            pop.style.bottom = "-300px";
         }
-        }
-    }else{
-        pop.style.bottom = "-300px";
     }
     // })
 </script>

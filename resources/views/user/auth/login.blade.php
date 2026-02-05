@@ -103,16 +103,6 @@
                                     <a href="{{ setRoute('user.register') }}" class="link-doar">{{ __('Regístrate ahora') }}</a>
                                 </div>
 
-                                <div class="col-12 text-center pt-3">
-                                    <p class="text-muted-doar mb-0 small">{{ __('Al iniciar sesión aceptas nuestros') }}</p>    
-                                    <p class="text-muted-doar mb-0 small">
-                                        <input type="checkbox" id="login-terms" name="terms_accept" class="terms-checkbox" value="1" required>
-                                        <label for="login-terms" class="terms-label">
-                                            
-                                            <a href="{{ route('page.view', 'terms-condition') }}" class="link-doar">{{ __('Términos y Condiciones') }}</a>.
-                                        </label>
-                                    </p>
-                                </div>
                             </div>
                         </form>
                     </div>

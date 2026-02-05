@@ -61,13 +61,11 @@ class LoginController extends Controller
             'g-recaptcha-response' => $captcha_rules,
         ]);
 
-        // if user exists with banner
-        if(User::where($this->username(),$request->credentials)->where('status',GlobalConst::BANNED)->exists()) {
+        if (User::where($this->username(), $request->credentials)->where('status', GlobalConst::BANNED)->exists()) {
             throw ValidationException::withMessages([
-                'credentials'   => 'Your account has been suspended!',
+                'credentials' => ['Your account has been suspended!'],
             ]);
         }
-
     }
 
 
@@ -79,9 +77,10 @@ class LoginController extends Controller
      */
     protected function credentials(Request $request)
     {
+        $col = $this->username();
         $request->merge(['status' => true]);
-        $request->merge([$this->username() => $request->credentials]);
-        return $request->only($this->username(), 'password','status');
+        $request->merge([$col => $request->credentials]);
+        return $request->only($col, 'password','status');
     }
 
 
@@ -94,10 +93,7 @@ class LoginController extends Controller
     {
         $request = $this->request_data->all();
         $credentials = $request['credentials'];
-        if(filter_var($credentials,FILTER_VALIDATE_EMAIL)) {
-            return "email";
-        }
-        return "username";
+        return filter_var($credentials, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
     }
 
     /**
@@ -128,6 +124,23 @@ class LoginController extends Controller
 
 
     /**
+     * Send the response after the user was authenticated.
+     * Usa 303 See Other para que el navegador siga el redirect con GET y envíe las cookies.
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+        $this->clearLoginAttempts($request);
+
+        $response = $this->authenticated($request, $this->guard()->user())
+            ?: redirect()->route('user.dashboard');
+
+        $request->session()->save();
+
+        return $response->setStatusCode(303);
+    }
+
+    /**
      * The user has been authenticated.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -136,13 +149,19 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-
-        $user->update([
-            'two_factor_verified'   => false,
-        ]);
+        $user->update(['two_factor_verified' => false]);
 
         $this->refreshUserWallets($user);
         $this->createLoginLog($user);
-        return redirect()->intended(route('user.dashboard'));
+
+        return redirect()->route('user.dashboard')->setStatusCode(303);
+    }
+
+    /**
+     * Ruta a la que redirigir tras el login (dashboard usuario público).
+     */
+    protected function redirectPath(): string
+    {
+        return route('user.dashboard');
     }
 }

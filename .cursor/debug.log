@@ -1,0 +1,82 @@
+{"timestamp":1770328022000,"location":"LoginController::validateLogin","message":"validateLogin FIRST line","data":[],"sessionId":"debug-session","hypothesisId":"H0"}
+{"timestamp":1770328022000,"location":"LoginController::validateLogin","message":"validateLogin entry","data":{"has_credentials":true,"has_password":true,"has_recaptcha":false,"recaptcha_len":0},"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328022000,"location":"LoginController::validateLogin","message":"before username() banned check","data":{"request_data_set":true},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::validateLogin","message":"validateLogin success","data":[],"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328022000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::credentials","message":"credentials built","data":{"column":"email","has_password":true},"sessionId":"debug-session","hypothesisId":"H3"}
+{"timestamp":1770328022000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328022000,"location":"LoginController::authenticated","message":"authenticated entry","data":{"user_id":1},"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328022000,"location":"LoginController::authenticated","message":"refreshUserWallets ok","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328022000,"location":"LoginController::authenticated","message":"createLoginLog ok","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328022000,"location":"LoginController::authenticated","message":"redirecting to dashboard","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328406000,"location":"LoginController::validateLogin","message":"validateLogin FIRST line","data":[],"sessionId":"debug-session","hypothesisId":"H0"}
+{"timestamp":1770328406000,"location":"LoginController::validateLogin","message":"validateLogin entry","data":{"has_credentials":true,"has_password":true,"has_recaptcha":false,"recaptcha_len":0},"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328406000,"location":"LoginController::validateLogin","message":"before username() banned check","data":{"request_data_set":true},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::validateLogin","message":"validateLogin success","data":[],"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328406000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::credentials","message":"credentials built","data":{"column":"email","has_password":true},"sessionId":"debug-session","hypothesisId":"H3"}
+{"timestamp":1770328406000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328406000,"location":"LoginController::authenticated","message":"authenticated entry","data":{"user_id":1},"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328407000,"location":"LoginController::authenticated","message":"refreshUserWallets ok","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328407000,"location":"LoginController::authenticated","message":"createLoginLog ok","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328407000,"location":"LoginController::authenticated","message":"redirecting to dashboard","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328726000,"location":"LoginController::validateLogin","message":"validateLogin FIRST line","data":[],"sessionId":"debug-session","hypothesisId":"H0"}
+{"timestamp":1770328726000,"location":"LoginController::validateLogin","message":"validateLogin entry","data":{"has_credentials":true,"has_password":true,"has_recaptcha":false,"recaptcha_len":0},"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328726000,"location":"LoginController::validateLogin","message":"before username() banned check","data":{"request_data_set":true},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::validateLogin","message":"validateLogin success","data":[],"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328726000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::credentials","message":"credentials built","data":{"column":"email","has_password":true},"sessionId":"debug-session","hypothesisId":"H3"}
+{"timestamp":1770328726000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328726000,"location":"LoginController::sendFailedLoginResponse","message":"attempt failed","data":[],"sessionId":"debug-session","hypothesisId":"H3"}
+{"timestamp":1770328739000,"location":"LoginController::validateLogin","message":"validateLogin FIRST line","data":[],"sessionId":"debug-session","hypothesisId":"H0"}
+{"timestamp":1770328739000,"location":"LoginController::validateLogin","message":"validateLogin entry","data":{"has_credentials":true,"has_password":true,"has_recaptcha":false,"recaptcha_len":0},"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328739000,"location":"LoginController::validateLogin","message":"before username() banned check","data":{"request_data_set":true},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::validateLogin","message":"validateLogin success","data":[],"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328739000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::credentials","message":"credentials built","data":{"column":"email","has_password":true},"sessionId":"debug-session","hypothesisId":"H3"}
+{"timestamp":1770328739000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328739000,"location":"LoginController::authenticated","message":"authenticated entry","data":{"user_id":1},"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328739000,"location":"LoginController::authenticated","message":"refreshUserWallets ok","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328739000,"location":"LoginController::authenticated","message":"createLoginLog ok","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328739000,"location":"LoginController::authenticated","message":"redirecting to dashboard","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328891000,"location":"LoginController::validateLogin","message":"validateLogin FIRST line","data":[],"sessionId":"debug-session","hypothesisId":"H0"}
+{"timestamp":1770328891000,"location":"LoginController::validateLogin","message":"validateLogin entry","data":{"has_credentials":true,"has_password":true,"has_recaptcha":false,"recaptcha_len":0},"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328891000,"location":"LoginController::validateLogin","message":"before username() banned check","data":{"request_data_set":true},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::validateLogin","message":"validateLogin success","data":[],"sessionId":"debug-session","hypothesisId":"H2"}
+{"timestamp":1770328891000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::credentials","message":"credentials built","data":{"column":"email","has_password":true},"sessionId":"debug-session","hypothesisId":"H3"}
+{"timestamp":1770328891000,"location":"LoginController::username","message":"username() called","data":{"request_data_is_null":false},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::username","message":"username() result","data":{"column":"email"},"sessionId":"debug-session","hypothesisId":"H1"}
+{"timestamp":1770328891000,"location":"LoginController::authenticated","message":"authenticated entry","data":{"user_id":1},"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328891000,"location":"LoginController::authenticated","message":"refreshUserWallets ok","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328891000,"location":"LoginController::authenticated","message":"createLoginLog ok","data":[],"sessionId":"debug-session","hypothesisId":"H4"}
+{"timestamp":1770328891000,"location":"LoginController::authenticated","message":"redirecting to dashboard","data":[],"sessionId":"debug-session","hypothesisId":"H4"}

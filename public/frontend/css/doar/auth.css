@@ -11,9 +11,9 @@
 .login-doar-section::before {
     content: '';
     position: absolute;
-    bottom: -120px;
-    width: 120%;
-    height: 70%;
+    bottom: 0;
+    width: 100%;
+    height: 65%;
     background: url('../../user/vector.svg') no-repeat left bottom / contain;
     z-index: 0;
 }
@@ -81,7 +81,7 @@
     background: #FFFFFF;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    padding: 3.5rem 2.5rem 3.5rem 2.5rem;
+    padding: 2.5rem 2.5rem 2.5rem 2.5rem;
     border: 1px solid rgba(0, 0, 0, 0.06);
 }
 .login-doar-section .login-card .form-title {
