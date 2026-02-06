@@ -795,6 +795,109 @@ body .panel-doar-wrapper .body-wrapper.active {
     }
 }
 
+/* ========== Enviar dinero (send-money) ========== */
+.panel-doar .send-money-form-doar .exchange-area-card {
+    margin-bottom: 0;
+}
+.panel-doar .send-money-form-doar .send-money-label {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+.panel-doar .send-money-form-doar .send-money-amount-wrap {
+    display: flex;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+.panel-doar .send-money-form-doar .send-money-amount-wrap .send-money-input {
+    flex: 1;
+    min-width: 0;
+    border: none !important;
+    border-radius: 10px 0 0 10px;
+    height: 48px;
+}
+.panel-doar .send-money-form-doar .send-money-amount-wrap .ad-select {
+    position: relative;
+    margin: 0;
+}
+.panel-doar .send-money-form-doar .send-money-currency-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 90px;
+    height: 48px;
+    padding: 0 14px;
+    background: #FCC741 !important;
+    border: none !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 0 10px 10px 0;
+    color: #BE8B0B;
+    font-weight: 600;
+    cursor: pointer;
+}
+.panel-doar .send-money-form-doar .send-money-currency-inner .custom-flag {
+    width: 24px;
+    height: auto;
+}
+.panel-doar .send-money-form-doar .send-money-note {
+    font-size: 0.9rem;
+    color: #BE8B0B;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+.panel-doar .send-money-form-doar .send-money-note-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+.panel-doar .send-money-form-doar .send-money-fees-right {
+    text-align: right;
+}
+.panel-doar .send-money-form-doar .send-money-submit-wrap {
+    margin-top: 1.25rem;
+    text-align: center;
+}
+.panel-doar .send-money-form-doar .send-money-btn {
+    width: 100%;
+    height: 52px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--panel-secondary);
+    background: linear-gradient(90deg, #FCC741 0%, #FEDE76 100%);
+    box-shadow: 0 2px 10px rgba(252, 199, 65, 0.35);
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+.panel-doar .send-money-form-doar .send-money-btn:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+    color: var(--panel-secondary);
+}
+@media (max-width: 767px) {
+    .panel-doar .send-money-form-doar .send-money-amount-wrap {
+        flex-direction: column;
+    }
+    .panel-doar .send-money-form-doar .send-money-amount-wrap .send-money-input {
+        border-radius: 10px 10px 0 0;
+    }
+    .panel-doar .send-money-form-doar .send-money-currency-inner {
+        border-left: none;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 0 0 10px 10px;
+        width: 100%;
+        min-width: 0;
+    }
+}
+
 /* ========== Resumen Agregar dinero (tarjeta derecha) ========== */
 .panel-doar .add-money-summary-card .custom-card,
 .panel-doar .add-money-summary-card {
