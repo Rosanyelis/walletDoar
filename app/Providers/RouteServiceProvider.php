@@ -33,24 +33,29 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
             try {
+                $basic_settings = null;
                 if (Schema::hasTable('basic_settings')) {
                     $basic_settings = BasicSettings::first();
                 }
             } catch (\Throwable $e) {
                 $basic_settings = null;
             }
+            $admin_prefix = $basic_settings?->admin_prefix ?? 'admin';
+
             Route::middleware(['api','system.maintenance.api'])
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
+
+            // Admin primero: así /admin se resuelve al panel admin y no al login público
+            Route::middleware(['web', 'system.maintenance'])
+                ->prefix($admin_prefix)
+                ->group(base_path('routes/admin.php'));
 
             Route::middleware(['web','system.maintenance'])
                 ->group(base_path('routes/web.php'));
 
             Route::middleware(['web','auth','verification.guard','user.google.two.factor','system.maintenance'])
                 ->group(base_path('routes/user.php'));
-
-            Route::prefix($basic_settings->admin_prefix??'admin')
-                ->group(base_path('routes/admin.php'));
 
             Route::middleware(['web','system.maintenance'])
                 ->group(base_path('routes/auth.php'));

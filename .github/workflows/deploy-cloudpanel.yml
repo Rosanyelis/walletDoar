@@ -1,0 +1,66 @@
+# =============================================================================
+# Despliegue automático a CloudPanel (Ubuntu) al hacer push a main
+# =============================================================================
+#
+# CONFIGURACIÓN EN GITHUB (Settings → Secrets and variables → Actions):
+#   - SSH_PRIVATE_KEY: clave privada SSH del usuario walletdoar (recomendado)
+#   - SERVER_HOST: IP o dominio del servidor (ej: 192.168.1.10 o deploy.tudominio.com)
+#   - SERVER_USER: (opcional) usuario SSH; por defecto walletdoar
+#   - SERVER_PORT: (opcional) puerto SSH; por defecto 22
+#   - DEPLOY_PATH: (solo si NO usas dploy) ruta en el servidor, ej: /home/walletdoar/htdocs/tudominio.com
+#
+# CONFIGURACIÓN EN EL SERVIDOR (usuario walletdoar):
+#   1. Generar par de claves en tu máquina: ssh-keygen -t ed25519 -f deploy_key -N ""
+#   2. Copiar deploy_key.pub al servidor y añadir a /home/walletdoar/.ssh/authorized_keys
+#   3. En GitHub → Settings → Secrets: crear SSH_PRIVATE_KEY con el contenido de deploy_key
+#   4. Si usas CloudPanel dploy: tener dploy instalado y configurado (dploy init laravel), luego "dploy deploy main" se ejecutará desde este workflow
+#   5. No guardes contraseñas en el repositorio; usa siempre clave SSH para el deploy
+#
+# =============================================================================
+
+name: Deploy to CloudPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configurar clave SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Añadir servidor a known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Desplegar en servidor (dploy)
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER || 'walletdoar' }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
+        run: |
+          ssh -o StrictHostKeyChecking=accept-new -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" \
+            'dploy deploy main'
+        continue-on-error: true
+
+      - name: Desplegar en servidor (git pull fallback)
+        if: failure()
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER || 'walletdoar' }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          if [ -z "$DEPLOY_PATH" ]; then
+            echo "DEPLOY_PATH no configurado. Configura el secret DEPLOY_PATH (ej: /home/walletdoar/htdocs/tudominio.com) o usa dploy en el servidor."
+            exit 1
+          fi
+          ssh -o StrictHostKeyChecking=accept-new -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" \
+            "cd $DEPLOY_PATH && git pull origin main && composer install --no-dev --optimize-autoloader && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache"
