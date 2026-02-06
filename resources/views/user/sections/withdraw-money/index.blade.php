@@ -11,154 +11,173 @@
 <div class="row mb-20-none">
     <div class="col-xl-7 col-lg-7 mb-20">
         <div class="custom-card mt-10">
-           <div class="dashboard-header-wrapper">
-               <h4 class="title">{{ $page_title }} </h4>
-           </div>
-           <div class="card-body">
-                <form class="card-form" action="{{ setRoute("user.withdraw.money.submit") }}" method="POST">
+            <div class="card-body p-3">
+                <form class="card-form add-money-form-doar withdraw-money-form-doar" action="{{ setRoute("user.withdraw.money.submit") }}" method="POST">
                     @csrf
-                   <div class="row">
-                       <div class="col-xl-12 col-lg-12 form-group text-center">
-                           <div class="exchange-area">
-                            <code class="d-block text-center"><span>{{ __("Exchange Rate") }}</span> <span class="rate-show">--</span></code>
-                           </div>
-                       </div>
-                       <div class="col-xl-6 col-lg-6 form-group add-money">
-                           <label>{{ __("Amount") }}<span>*</span></label>
-                           <input type="text" class="form--control" name="amount" value="{{ old("amount") }}" id="amountInput" placeholder="{{ __("Enter Amount") }}">
-                            <div class="currency">
-                                <select class="nice-select" name="request_currency">
-                                    @foreach ($user_wallets ?? [] as $item)
-                                    <option
-                                    value="{{ $item->currency->code }}"
-                                    data-id="{{ $item->currency->id }}"
-                                    data-rate="{{ $item->currency->rate }}"
-                                    data-symbol="{{ $item->currency->symbol }}"
-                                    data-type="{{ $item->currency->type }}"
-                                    data-balance="{{ $item->balance }}"
-                                    {{ get_default_currency_code() == $item->currency->code ? "selected": "" }}
-                                    >{{ $item->currency->code }}</option> 
-                                    @endforeach 
-                                </select>
-                            </div> 
-                            <code class="d-block mt-10 walletBalanceShow"></code>
-                       </div>
-                       <div class="col-xl-6 col-lg-6 form-group payment-gateway-select">
-                           <label>{{ __("Payment Gateway") }}<span>*</span></label>
-                           <select class="form--control select2-auto-tokenize" name="gateway_currency"> 
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 form-group">
+                            <div class="exchange-area exchange-area-card withdraw-exchange-banner justify-content-between">
+                                <div class="exchange-area-text">
+                                    <span class="exchange-area-label">{{ __("Tipo de cambio") }}</span>
+                                    <span class="exchange-area-rate rate-show">--</span>
+                                </div>
+                                <div class="exchange-area-logo">
+                                    @include('user.sections.add-money.partials.exchange-banner-logo')
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 form-group">
+                            <div class="withdraw-bank-connect-card">
+                                <div class="withdraw-bank-connect-icon" aria-hidden="true">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2L2 8l10 2 10-2L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M4 9v12h4V9M10 9v12h4V9M16 9v12h4V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <p class="withdraw-bank-connect-text">{{ __("Conecta tu cuenta bancaria para retirar dinero directamente.") }}</p>
+                                <a href="#" class="withdraw-bank-connect-btn">{{ __("Conectar cuenta bancaria") }} &rsaquo;</a>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 form-group add-money">
+                            <label class="add-money-label">{{ __("Cantidad") }}<span>*</span></label>
+                            <div class="add-money-amount-wrap">
+                                <input type="text" class="form--control add-money-input" name="amount" value="{{ old('amount') }}" id="amountInput" placeholder="{{ __('Ingrese el monto') }}">
+                                <div class="currency">
+                                    <select class="nice-select add-money-currency-select" name="request_currency">
+                                        @foreach ($user_wallets ?? [] as $item)
+                                            <option
+                                                value="{{ $item->currency->code }}"
+                                                data-id="{{ $item->currency->id }}"
+                                                data-rate="{{ $item->currency->rate }}"
+                                                data-symbol="{{ $item->currency->symbol }}"
+                                                data-type="{{ $item->currency->type }}"
+                                                data-balance="{{ $item->balance }}"
+                                                {{ get_default_currency_code() == $item->currency->code ? 'selected' : '' }}
+                                            >{{ $item->currency->code }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="d-block mt-1 add-money-note walletBalanceShow"></p>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 form-group payment-gateway-select">
+                            <label class="add-money-label">{{ __("Pasarela de pago") }}<span>*</span></label>
+                            <select class="form--control add-money-select select2-auto-tokenize" name="gateway_currency">
                                 @foreach ($payment_gateways ?? [] as $gateway)
-                                    @foreach ($gateway->currencies ?? [] as $item) 
-                                    <option 
-                                    value="{{ $item->alias  }}"
-                                    data-currency="{{ $item->currency_code }}"
-                                    data-min_amount="{{ $item->min_limit }}"
-                                    data-max_amount="{{ $item->max_limit }}"
-                                    data-percent_charge="{{ $item->percent_charge }}"
-                                    data-fixed_charge="{{ $item->fixed_charge }}"
-                                    data-rate="{{ $item->rate }}"
-                                    value="1">
-                                        {{ $item->name }}
-                                        </option>
+                                    @foreach ($gateway->currencies ?? [] as $item)
+                                        <option
+                                            value="{{ $item->alias }}"
+                                            data-currency="{{ $item->currency_code }}"
+                                            data-min_amount="{{ $item->min_limit }}"
+                                            data-max_amount="{{ $item->max_limit }}"
+                                            data-percent_charge="{{ $item->percent_charge }}"
+                                            data-fixed_charge="{{ $item->fixed_charge }}"
+                                            data-rate="{{ $item->rate }}"
+                                        >{{ $item->name }}</option>
                                     @endforeach
-                                @endforeach 
+                                @endforeach
                             </select>
-                       </div>
-                       <div class="col-xl-12 col-lg-12 form-group">
-                           <div class="note-area">
-                            <code class="d-block limit-show">--</code>
-                            <code class="d-block fees-show">--</code>
-                           </div>
-                       </div>
-                   </div>
-                   <div class="col-xl-12 col-lg-12">
-                       <button type="submit" class="btn--base w-100">{{ __("Confirm") }}</button>
-                   </div>
-               </form>
-           </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="note-area add-money-note-area">
+                                <p class="d-block add-money-note limit-show">--</p>
+                                <p class="d-block add-money-note add-money-fees-right fees-show">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="add-money-submit-wrap">
+                        <button type="submit" class="add-money-btn withdraw-money-btn">{{ __("Retirar dinero") }}</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <div class="col-xl-5 col-lg-5 mb-20">
         <div class="custom-card mt-10">
-            <div class="dashboard-header-wrapper">
-                <h4 class="title">{{ __("Summery") }}</h4>
+            <div class="dashboard-header-wrapper ">
+                <h4 class="title add-money-summary-title">{{ __("Resumen") }}</h4>
             </div>
-            <div class="card-body">
-                <div class="preview-list-wrapper">
-                    <div class="preview-list-item">
+            <div class="card-body add-money-summary-body">
+                <div class="preview-list-wrapper add-money-summary-list">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Entered Amount") }}</span>
+                                    <span>{{ __("Monto del retiro") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--success request-amount">--</span>
+                            <span class="request-amount">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-money-check-alt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 17L3 12l4-5M17 7l4 5-4 5M14 4l-4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Conversion Amount") }}</span>
+                                    <span>{{ __("Tipo de cambio") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--info conversion-amount">--</span>
+                            <span class="rate-show">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-battery-half"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Total Fees & Charges") }}</span>
+                                    <span>{{ __("Tarifas y cargos totales") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--warning fees">--</span>
+                            <span class="fees add-money-summary-value-gold">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="lab la-get-pocket"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span >{{ __("Will Get") }}</span>
+                                    <span>{{ __("Obtendrá") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--danger will-get">--</span>
+                            <span class="will-get">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item add-money-summary-item-total">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-money-check-alt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h6M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span class="last">{{ __("Total Payable Amount") }}</span>
+                                    <span class="fw-bold">{{ __("Monto total a retirar") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--info last pay-in-total">--</span>
+                            <span class="pay-in-total fw-bold add-money-summary-value-gold">--</span>
                         </div>
                     </div>
+                </div>
+                <div class="add-money-summary-footer">
+                    <span class="add-money-summary-cost fees-show">--</span>
+                    <span class="add-money-summary-total pay-in-total">--</span>
                 </div>
             </div>
         </div>
@@ -202,8 +221,8 @@
         getFees();
         getPreview();
    }); 
-   function walletBalance(){ 
-    $('.walletBalanceShow').html("Available balance: " + $("select[name=request_currency] :selected").attr("data-symbol") + parseFloat($("select[name=request_currency] :selected").attr("data-balance")).toFixed(2));
+   function walletBalance(){
+    $('.walletBalanceShow').html("Saldo disponible: " + $("select[name=request_currency] :selected").attr("data-symbol") + parseFloat($("select[name=request_currency] :selected").attr("data-balance")).toFixed(2));
    }
    // calculate exchange rate 
    function getExchangeRate(event) {
@@ -231,7 +250,7 @@
        if($.isNumeric(min_limit) || $.isNumeric(max_limit)) {
            var min_limit_calc = parseFloat(min_limit/exchangeRate).toFixed(2); 
            var max_limit_clac = parseFloat(max_limit/exchangeRate).toFixed(2);
-           $('.limit-show').html("Limit: " + min_limit_calc + " " + acceptVar().senderCurrencyCode + " - " + max_limit_clac + " " + acceptVar().senderCurrencyCode);
+           $('.limit-show').html("Límite: " + min_limit_calc + " " + acceptVar().senderCurrencyCode + " - " + max_limit_clac + " " + acceptVar().senderCurrencyCode);
            return {
                minLimit:min_limit_calc,
                maxLimit:max_limit_clac,
@@ -318,38 +337,33 @@
        if (charges == false) {
            return false;
        }
-       $(".fees-show").html("Charge: " + parseFloat(charges.fixed).toFixed(acceptVar().senderCurrencyDigit) + " " + gateway_currency_code + " + " + parseFloat(charges.percent).toFixed(acceptVar().senderCurrencyDigit) + "%");
+       $(".fees-show").html("Cargo: " + parseFloat(charges.fixed).toFixed(acceptVar().senderCurrencyDigit) + " " + gateway_currency_code + " + " + parseFloat(charges.percent).toFixed(acceptVar().senderCurrencyDigit) + "%");
    }
    function getPreview() {
            var senderAmount = $("input[name=amount]").val();
            var gateway_currency_code = acceptVar().gatewayCode;
            var gateway_currency_rate = acceptVar().gatewayRate;
            var charges = feesCalculation();
-           
-            var gatewayRate = acceptVar().gatewayRate;
-           var senderRate = acceptVar().senderRate; 
-           var exchangeRate = (1/senderRate)*gatewayRate; 
-            
+           var gatewayRate = acceptVar().gatewayRate;
+           var senderRate = acceptVar().senderRate;
+           var exchangeRate = (1/senderRate)*gatewayRate;
+
            senderAmount == "" ? senderAmount = 0 : senderAmount = senderAmount;
 
-           // Sending Amount
            $('.request-amount').text(parseFloat(senderAmount).toFixed(acceptVar().senderCurrencyDigit) + " " + acceptVar().senderCurrencyCode);
 
-           // conversion-amount
-           var totalPay = parseFloat(senderAmount) * parseFloat(exchangeRate)
-           $('.conversion-amount').text(parseFloat(totalPay).toFixed(acceptVar().senderCurrencyDigit) + " " + gateway_currency_code);
+           if (charges) {
+               $('.fees').text(charges.total + " " + gateway_currency_code);
+               var totalPay = parseFloat(senderAmount) * parseFloat(exchangeRate);
+               var willGet = parseFloat(totalPay).toFixed(acceptVar().senderCurrencyDigit) - parseFloat(charges.total);
+               $('.will-get').text(parseFloat(willGet).toFixed(2) + " " + gateway_currency_code);
+           } else {
+               $('.fees').text("--");
+               $('.will-get').text("--");
+           }
 
-           // Fees
-           $('.fees').text(charges.total + " " + gateway_currency_code);
-
-           // will get amount
-           var willGet = parseFloat(totalPay).toFixed(acceptVar().senderCurrencyDigit) - parseFloat(charges.total).toFixed(acceptVar().senderCurrencyDigit);
-           $('.will-get').text(parseFloat(willGet).toFixed(2) + " " + gateway_currency_code);
-
-           // Pay In Total 
-           totalAmount = parseFloat(senderAmount).toFixed(acceptVar().senderCurrencyDigit);
+           var totalAmount = parseFloat(senderAmount).toFixed(acceptVar().senderCurrencyDigit);
            $('.pay-in-total').text(parseFloat(totalAmount).toFixed(acceptVar().senderCurrencyDigit) + " " + acceptVar().senderCurrencyCode);
-
     } 
 </script>
 <script>

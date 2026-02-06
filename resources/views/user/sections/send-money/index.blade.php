@@ -26,7 +26,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-12 col-lg-12 form-group add-money">
+                        <div class="col-xl-12 col-lg-12 form-group mb-0">
+                            <div class="recipient-wrap">
+                                <label class="send-money-label">{{ __("Correo del destinatario") }}<span>*</span></label>
+                                <input type="text" name="recipient_email" class="form--control" value="{{ old('recipient_email') }}" placeholder="{{ __('Correo del destinatario') }}">
+                            </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 form-group add-money mb-0">
                             <label class="send-money-label">{{ __("Importe del remitente") }}<span>*</span></label>
                             <div class="send-money-amount-wrap">
                                 <input type="text" name="sender_amount" class="form--control send-money-input" value="{{ old('sender_amount') }}" id="amountInput" placeholder="{{ __('Importe del remitente') }}">
@@ -61,7 +67,7 @@
                             </div>
                             <p class="d-block mt-2 send-money-note text-end balance-show">--</p>
                         </div>
-                        <div class="col-xl-12 col-lg-12 form-group add-money">
+                        <div class="col-xl-12 col-lg-12 form-group add-money mb-0">
                             <label class="send-money-label">{{ __("Cantidad de destinatarios") }}<span>*</span></label>
                             <div class="send-money-amount-wrap">
                                 <input type="text" name="receiver_amount" class="form--control send-money-input" value="{{ old('receiver_amount') }}" placeholder="0.00" readonly>
@@ -95,7 +101,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-12 col-lg-12 form-group">
+                        <div class="col-xl-12 col-lg-12 form-group mb-0">
                             <div class="note-area send-money-note-area">
                                 <p class="d-block send-money-note limit-show">--</p>
                                 <p class="d-block send-money-note send-money-fees-right fees-show">--</p>

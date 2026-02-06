@@ -898,6 +898,75 @@ body .panel-doar-wrapper .body-wrapper.active {
     }
 }
 
+/* ========== Retirar dinero (withdraw-money) ========== */
+.panel-doar .withdraw-money-form-doar .exchange-area-card.withdraw-exchange-banner {
+    background: linear-gradient(90deg, #5B9A8E 0%, #7BC9B9 100%);
+    color: #fff;
+}
+.panel-doar .withdraw-money-form-doar .withdraw-exchange-banner .exchange-area-label,
+.panel-doar .withdraw-money-form-doar .withdraw-exchange-banner .exchange-area-rate {
+    color: #fff;
+}
+.panel-doar .withdraw-bank-connect-card {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    padding: 1.25rem 1.5rem;
+    background: #FEE8B7;
+    border: none;
+    border-radius: 14px;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.panel-doar .withdraw-bank-connect-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #BE8B0B;
+}
+.panel-doar .withdraw-bank-connect-icon svg {
+    width: 40px;
+    height: 40px;
+}
+.panel-doar .withdraw-bank-connect-text {
+    flex: 1;
+    min-width: 200px;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #1e293b;
+    line-height: 1.45;
+}
+.panel-doar .withdraw-bank-connect-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #BE8B0B;
+    background: linear-gradient(90deg, #FCC741 0%, #FEDE76 100%);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(252, 199, 65, 0.4);
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.panel-doar .withdraw-bank-connect-btn:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(252, 199, 65, 0.45);
+    color: #BE8B0B;
+}
+
+.panel-doar .add-money-summary-value-gold {
+    color: #BE8B0B !important;
+}
+
 /* ========== Resumen Agregar dinero (tarjeta derecha) ========== */
 .panel-doar .add-money-summary-card .custom-card,
 .panel-doar .add-money-summary-card {
