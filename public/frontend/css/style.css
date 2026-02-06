@@ -7996,7 +7996,7 @@ pre.prettyprint {
 }
 
 .tow-fa-security .card-body {
-  background-color: rgba(0, 155, 145, 0.0705882353);
+  background-color:#fff;
   -webkit-box-shadow: 0 5px 5px 0 rgb(183 183 183 / 25%) !important;
           box-shadow: 0 5px 5px 0 rgb(183 183 183 / 25%) !important;
   padding: 30px;

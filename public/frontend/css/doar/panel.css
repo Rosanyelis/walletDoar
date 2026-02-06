@@ -892,3 +892,19 @@ body .panel-doar-wrapper .body-wrapper.active {
     font-weight: 700;
     color: #FCC741;
 }
+
+/* ========== Botón dorado (2FA, Permitir, etc.) ========== */
+.panel-doar .btn-doar-gold,
+.panel-doar .btn-doar-gold:hover,
+.panel-doar .btn-doar-gold:focus {
+    background-color: #FCC741 !important;
+    color: #000 !important;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: none;
+}
+.panel-doar .btn-doar-gold:hover {
+    background-color: #FEDE76 !important;
+    color: #000 !important;
+}
