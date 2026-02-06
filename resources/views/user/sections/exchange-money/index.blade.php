@@ -17,65 +17,70 @@
 @section('content')
 <div class="row mt-20 mb-20-none">
     <div class="col-xl-7 col-lg-7 mb-20">
-        <div class="custom-card mt-10">
-            <div class="dashboard-header-wrapper">
-                <h4 class="title">{{ __("Money Exchange") }}</h4>
-            </div>
+        <div class="custom-card exchange-money-card mt-10">
             <div class="card-body">
-                <form class="card-form" action="{{ setRoute('user.exchange.money.submit') }}" method="POST">
+                <form class="card-form exchange-money-form-doar" action="{{ setRoute('user.exchange.money.submit') }}" method="POST">
                     @csrf
+                    <div class="exchange-money-header">
+                        <div class="exchange-money-header-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        </div>
+                        <div class="exchange-money-header-text">
+                            <h4 class="exchange-money-header-title">{{ __("Tipo de cambio") }}</h4>
+                            <span class="exchange-money-header-rate exchangeRateShow"></span>
+                        </div>
+                    </div>
                     <div class="row">
-                        <div class="col-xl-12 col-lg-12 form-group text-center">
-                            <div class="exchange-area">
-                                <code class="d-block text-center"><span>{{ __("Exchange Rate") }}</span> <span class="exchangeRateShow"></span></code>
+                        <div class="col-xl-12 col-lg-12 form-group add-money">
+                            <label class="exchange-money-label">{{ __("Moneda de origen") }}<span>*</span></label>
+                            <div class="exchange-money-amount-wrap">
+                                <input type="text" class="form--control exchange-money-input" name="exchange_from_amount" value="{{ old('exchange_from_amount') }}" placeholder="{{ __('Ingrese cantidad...') }}">
+                                <div class="currency">
+                                    <select class="form--control nice-select exchangeFromCurrency" name="exchange_from_currency">
+                                        @foreach ($user_wallets as $item)
+                                            <option
+                                                value="{{ $item->currency->code }}"
+                                                data-id="{{ $item->currency->id }}"
+                                                data-rate="{{ $item->currency->rate }}"
+                                                data-code="{{ $item->currency->code }}"
+                                                data-type="{{ $item->currency->type }}"
+                                                data-symbol="{{ $item->currency->symbol }}"
+                                                data-balance="{{ $item->balance }}"
+                                            >{{ $item->currency->code }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="d-block mt-2 exchange-money-note fromWalletBalanceShow"></p>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 form-group add-money">
+                            <label class="exchange-money-label">{{ __("Moneda de destino") }}<span>*</span></label>
+                            <div class="exchange-money-amount-wrap">
+                                <input type="text" class="form--control exchange-money-input" name="exchange_to_amount" placeholder="0.00" readonly>
+                                <div class="currency">
+                                    <select class="form--control nice-select exchangeToCurrency" name="exchange_to_currency">
+                                        @foreach ($user_wallets as $item)
+                                            <option
+                                                value="{{ $item->currency->code }}"
+                                                data-id="{{ $item->currency->id }}"
+                                                data-rate="{{ $item->currency->rate }}"
+                                                data-code="{{ $item->currency->code }}"
+                                                data-type="{{ $item->currency->type }}"
+                                            >{{ $item->currency->code }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xl-12 col-lg-12 form-group add-money">
-                            <label>{{ __("Exchange From") }}<span>*</span></label>
-                            <input type="text" class="form--control" name="exchange_from_amount" value="{{ old('exchange_from_amount')}}" placeholder="Enter Amount...">
-                             <div class="currency">
-                                <select class="form--control nice-select exchangeFromCurrency" name="exchange_from_currency">
-                                    @foreach ($user_wallets as $item)
-                                    <option 
-                                    value="{{ $item->currency->code }}"
-                                    data-id="{{ $item->currency->id }}"
-                                    data-rate="{{ $item->currency->rate }}"
-                                    data-code="{{ $item->currency->code }}"
-                                    data-type="{{ $item->currency->type }}"
-                                    data-symbol="{{ $item->currency->symbol }}"
-                                    data-balance="{{ $item->balance }}"
-                                        >{{ $item->currency->code }}</option>
-                                    @endforeach 
-                                </select>
-                             </div>
-                             <code class="d-block mt-10 text-end fromWalletBalanceShow"></code>
-                        </div>
-                        <div class="col-xl-12 col-lg-12 form-group add-money">
-                            <label>{{ __("Exchange To") }}<span>*</span></label>
-                            <input type="text" class="form--control" name="exchange_to_amount" placeholder="Exchange Amount..." readonly>
-                             <div class="currency">
-                                <select class="form--control nice-select exchangeToCurrency" name="exchange_to_currency">
-                                    @foreach ($user_wallets as $item)
-                                    <option 
-                                    value="{{ $item->currency->code }}"
-                                    data-id="{{ $item->currency->id }}"
-                                    data-rate="{{ $item->currency->rate }}"
-                                    data-code="{{ $item->currency->code }}"
-                                    data-type="{{ $item->currency->type }}"
-                                        >{{ $item->currency->code }}</option>
-                                    @endforeach 
-                                </select>
-                             </div>
-                        </div>
                         <div class="col-xl-12 col-lg-12 form-group">
-                            <div class="note-area">
-                                <code class="d-block limit-show"></code>
-                                <code class="d-block fees-show"></code>
+                            <div class="note-area exchange-money-note-area">
+                                <p class="d-block exchange-money-note limit-show"></p>
+                                <p class="d-block exchange-money-note exchange-money-fees-right fees-show"></p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-12 col-lg-12">
-                        <button type="submit" class="btn--base w-100">{{ __("Exchange Money") }}</button>
+                    <div class="exchange-money-submit-wrap">
+                        <button type="submit" class="exchange-money-btn">{{ __("Cambio de moneda") }}</button>
                     </div>
                 </form>
             </div>
@@ -84,115 +89,118 @@
     <div class="col-xl-5 col-lg-5 mb-20">
         <div class="custom-card mt-10">
             <div class="dashboard-header-wrapper">
-                <h4 class="title">{{ __("Summery") }}</h4>
+                <h4 class="title add-money-summary-title">{{ __("Resumen") }}</h4>
             </div>
-            <div class="card-body">
-                <div class="preview-list-wrapper">
-                    <div class="preview-list-item">
+            <div class="card-body add-money-summary-body">
+                <div class="preview-list-wrapper add-money-summary-list">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h6M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("From Wallet") }}</span>
+                                    <span>{{ __("Desde la billetera") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--success fromWallet">--</span>
+                            <span class="fromWallet">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("To Exchange") }}</span>
+                                    <span>{{ __("A cambio") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="toExchange">--</span>
+                            <span class="toExchange exchange-summary-value-red">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 17L3 12l4-5M17 7l4 5-4 5M14 4l-4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Exchange Rate") }}</span>
+                                    <span>{{ __("Tipo de cambio") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="rateShow">--</span>
+                            <span class="rateShow exchange-summary-value-green">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Total Exchange Amount") }}</span>
+                                    <span>{{ __("Importe total del cambio") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--danger requestAmount">--</span>
+                            <span class="requestAmount exchange-summary-value-gold">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Converted Amount") }}</span>
+                                    <span>{{ __("Monto convertido") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="receiveAmount">--</span>
+                            <span class="receiveAmount exchange-summary-value-green">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Total Charge") }}</span>
+                                    <span>{{ __("Carga total") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="fees">--</span>
+                            <span class="fees exchange-summary-value-gold">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item add-money-summary-item-total">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Total Payable") }}</span>
+                                    <span class="fw-bold">{{ __("Total a pagar") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="payInTotal">--</span>
+                            <span class="payInTotal exchange-summary-value-gold fw-bold">--</span>
                         </div>
                     </div>
+                </div>
+                <div class="add-money-summary-footer">
+                    <span class="add-money-summary-total payInTotal">--</span>
                 </div>
             </div>
         </div>
@@ -215,11 +223,11 @@
     <script>
         $(document).ready(function(){
             callFunctions() 
-            $('.fromWalletBalanceShow').html("Available balance: " + $("select[name=exchange_from_currency] :selected").attr("data-symbol") + parseFloat($("select[name=exchange_from_currency] :selected").attr("data-balance")).toFixed(2));
+            $('.fromWalletBalanceShow').html("{{ __('Saldo disponible') }}: " + $("select[name=exchange_from_currency] :selected").attr("data-symbol") + parseFloat($("select[name=exchange_from_currency] :selected").attr("data-balance")).toFixed(2));
         })
         $('.exchangeFromCurrency').on('change', function(){
             callFunctions()
-            $('.fromWalletBalanceShow').html("Available balance: " + $("select[name=exchange_from_currency] :selected").attr("data-symbol") + parseFloat($("select[name=exchange_from_currency] :selected").attr("data-balance")).toFixed(2));
+            $('.fromWalletBalanceShow').html("{{ __('Saldo disponible') }}: " + $("select[name=exchange_from_currency] :selected").attr("data-symbol") + parseFloat($("select[name=exchange_from_currency] :selected").attr("data-balance")).toFixed(2));
         })
         $('.exchangeToCurrency').on('change', function(){
             callFunctions()
@@ -285,7 +293,7 @@
             
             var min_limit_calc = parseFloat(min_limit*exchangeRate);
             var max_limit_clac = parseFloat(max_limit*exchangeRate);
-            $('.limit-show').html("Limit: " + min_limit_calc.toFixed(2) + " " + exchangeFromCode + " - " + max_limit_clac.toFixed(2) + " " + exchangeFromCode);
+            $('.limit-show').html("{{ __('Límite') }}: " + min_limit_calc.toFixed(2) + " " + exchangeFromCode + " - " + max_limit_clac.toFixed(2) + " " + exchangeFromCode);
 
         }
         //calculate fees 
@@ -308,7 +316,7 @@
         function getFees() {
             var exchangeFromCode =  acceptVar().exchangeFromCode;
             var charges = feesCalculation();
-            $('.fees-show').html("Charge: " + parseFloat(charges.fixed_charge).toFixed(2) + " " + exchangeFromCode +" + " + parseFloat(percentCharge) + "%" + " = "+ parseFloat(charges.total_charge).toFixed(2) + " " + exchangeFromCode);
+            $('.fees-show').html("{{ __('Cargo') }}: " + parseFloat(charges.fixed_charge).toFixed(2) + " " + exchangeFromCode +" + " + parseFloat(percentCharge) + "%" + " = "+ parseFloat(charges.total_charge).toFixed(2) + " " + exchangeFromCode);
         }
         //preview details
         function previewDetails(){
