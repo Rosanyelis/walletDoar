@@ -1065,6 +1065,79 @@ body .panel-doar-wrapper .body-wrapper.active {
     color: #FCC741;
 }
 
+/* ========== Solicitud de dinero (request-money) ========== */
+.panel-doar .request-money-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.panel-doar .request-money-header-icon {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FCC741 0%, #FEDE76 100%);
+    color: #fff;
+}
+.panel-doar .request-money-header-icon svg {
+    width: 28px;
+    height: 28px;
+}
+.panel-doar .request-money-header-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 0.25rem 0;
+}
+.panel-doar .request-money-header-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+}
+.panel-doar .request-money-form-doar .request-money-amount-wrap {
+    display: flex;
+    align-items: stretch;
+}
+.panel-doar .request-money-amount-prefix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    padding: 0 14px;
+    background: #f3f4f6;
+    border: 1px solid #e2e8f0;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+.panel-doar .request-money-form-doar .request-money-amount-wrap .add-money-input {
+    border-radius: 0;
+}
+.panel-doar .request-money-form-doar .request-money-amount-wrap .currency .nice-select,
+.panel-doar .request-money-form-doar .request-money-amount-wrap .add-money-currency-select {
+    border-radius: 0 10px 10px 0;
+}
+.panel-doar .request-money-optional {
+    color: #c2410c;
+    font-weight: 400;
+}
+.panel-doar .request-money-summary-fees {
+    color: #dc2626 !important;
+}
+.panel-doar .request-money-summary-willget {
+    color: #16a34a !important;
+}
+.panel-doar .request-money-summary-card .add-money-summary-footer {
+    justify-content: center;
+}
+
 /* ========== Botón dorado (2FA, Permitir, etc.) ========== */
 .panel-doar .btn-doar-gold,
 .panel-doar .btn-doar-gold:hover,

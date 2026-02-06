@@ -11,118 +11,130 @@
 <div class="row mb-20-none">
     <div class="col-xl-7 col-lg-7 mb-20">
         <div class="custom-card mt-10">
-            <div class="dashboard-header-wrapper">
-                <h4 class="title">{{ __("Request Money") }}</h4>
-            </div>
-            <div class="card-body">
-                <form action="{{ setRoute('user.request.money.submit') }}" method="POST" class="card-form">
+            <div class="card-body p-3">
+                <form action="{{ setRoute('user.request.money.submit') }}" method="POST" class="card-form add-money-form-doar request-money-form-doar">
                     @csrf
+                    <div class="request-money-header">
+                        <div class="request-money-header-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        </div>
+                        <div class="request-money-header-text">
+                            <h4 class="request-money-header-title">{{ __("Solicitud de dinero") }}</h4>
+                            <p class="request-money-header-subtitle">{{ __("Solicita dinero a un familiar, cliente o amigo") }}</p>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 form-group add-money">
-                            <label>{{ __("Request Amount") }}<span>*</span></label>
-                            <input type="number" name="amount" class="form--control" placeholder="Enter Amount">
-                            <div class="currency">
-                                <select class="nice-select" name="request_currency">
-                                    @foreach ($user_wallets ?? [] as $item)
-                                    <option
-                                    value="{{ $item->currency->code }}"
-                                    data-id="{{ $item->currency->id }}"
-                                    data-rate="{{ $item->currency->rate }}"
-                                    data-symbol="{{ $item->currency->symbol }}"
-                                    data-type="{{ $item->currency->type }}"
-                                    data-balance="{{ $item->balance }}"
-                                    {{ get_default_currency_code() == $item->currency->code ? "selected": "" }}
-                                    >{{ $item->currency->code }}</option> 
-                                    @endforeach 
-                                </select>
+                            <label class="add-money-label">{{ __("Cantidad de solicitud") }}<span>*</span></label>
+                            <div class="add-money-amount-wrap request-money-amount-wrap">
+                                <span class="request-money-amount-prefix" aria-hidden="true">$</span>
+                                <input type="text" name="amount" class="form--control add-money-input" value="{{ old('amount') }}" id="amountInput" placeholder="{{ __('Importe del remitente') }}">
+                                <div class="currency">
+                                    <select class="nice-select add-money-currency-select" name="request_currency">
+                                        @foreach ($user_wallets ?? [] as $item)
+                                            <option
+                                                value="{{ $item->currency->code }}"
+                                                data-id="{{ $item->currency->id }}"
+                                                data-rate="{{ $item->currency->rate }}"
+                                                data-symbol="{{ $item->currency->symbol }}"
+                                                data-type="{{ $item->currency->type }}"
+                                                data-balance="{{ $item->balance }}"
+                                                {{ get_default_currency_code() == $item->currency->code ? 'selected' : '' }}
+                                            >{{ $item->currency->code }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <code class="d-block mt-10 text-end walletBalanceShow"></code>
+                            <p class="d-block mt-2 add-money-note text-end walletBalanceShow"></p>
                         </div>
                         <div class="col-xl-12 col-lg-12 form-group">
-                            <label>{{ __("Remarks") }} <span class="text--base">({{ __("Optional") }})</span></label>
-                            <textarea class="form--control" name="remark" placeholder="{{ __("Explain Request Purposes Here") }}…"></textarea>
+                            <label class="add-money-label">{{ __("Observaciones") }} <span class="request-money-optional">({{ __("Opcional") }})</span></label>
+                            <textarea class="form--control" name="remark" rows="3" placeholder="{{ __("Explique los propósitos de la solicitud aquí...") }}"></textarea>
                         </div>
-                        <div class="col-xl-12 col-lg-12 form-group">
-                            <div class="note-area">
-                                <code class="d-block limit-show">--</code>
-                                <code class="d-block fees-show">--</code>
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="note-area add-money-note-area">
+                                <p class="d-block add-money-note limit-show">--</p>
+                                <p class="d-block add-money-note add-money-fees-right fees-show">--</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-12 col-lg-12">
-                        <button type="submit" class="btn--base w-100">{{ __("Request Money") }}</button>
+                    <div class="add-money-submit-wrap">
+                        <button type="submit" class="add-money-btn">{{ __("Pedir dinero") }}</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     <div class="col-xl-5 col-lg-5 mb-20">
-        <div class="custom-card mt-10">
+        <div class="custom-card mt-10 request-money-summary-card">
             <div class="dashboard-header-wrapper">
-                <h4 class="title">{{ __("Summary") }}</h4>
+                <h4 class="title add-money-summary-title">{{ __("Resumen") }}</h4>
             </div>
-            <div class="card-body">
-                <div class="preview-list-wrapper">
-                    <div class="preview-list-item">
+            <div class="card-body add-money-summary-body">
+                <div class="preview-list-wrapper add-money-summary-list">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-receipt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h6M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Entered Amount") }}</span>
+                                    <span>{{ __("Monto solicitado") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--success request-amount">--</span>
+                            <span class="request-amount">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-battery-half"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Total Fees & Charges") }}</span>
+                                    <span>{{ __("Tarifas y cargos totales") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--warning fees">--</span>
+                            <span class="fees request-money-summary-fees">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="lab la-get-pocket"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span>{{ __("Will Get") }}</span>
+                                    <span>{{ __("Obtendrá") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--danger will-get"></span>
+                            <span class="will-get request-money-summary-willget">--</span>
                         </div>
                     </div>
-                    <div class="preview-list-item">
+                    <div class="preview-list-item add-money-summary-item add-money-summary-item-total">
                         <div class="preview-list-left">
                             <div class="preview-list-user-wrapper">
-                                <div class="preview-list-user-icon">
-                                    <i class="las la-money-check-alt"></i>
+                                <div class="preview-list-user-icon add-money-summary-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h6M12 11v6M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </div>
                                 <div class="preview-list-user-content">
-                                    <span class="last">{{ __("Total Payable Amount") }}</span>
+                                    <span class="fw-bold">{{ __("Monto total a pagar") }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="preview-list-right">
-                            <span class="text--info last pay-in-total">--</span>
+                            <span class="pay-in-total fw-bold">--</span>
                         </div>
                     </div>
+                </div>
+                <div class="add-money-summary-footer">
+                    <span class="add-money-summary-total pay-in-total">--</span>
                 </div>
             </div>
         </div>
@@ -164,8 +176,8 @@
                 getFees();
                 getPreview();
         }); 
-        function walletBalance(){ 
-            $('.walletBalanceShow').html("Available balance: " + $("select[name=request_currency] :selected").attr("data-symbol") + parseFloat($("select[name=request_currency] :selected").attr("data-balance")).toFixed(2));
+        function walletBalance(){
+            $('.walletBalanceShow').html("Saldo disponible: " + $("select[name=request_currency] :selected").attr("data-symbol") + parseFloat($("select[name=request_currency] :selected").attr("data-balance")).toFixed(2));
         }
          //minimum and maxmimum money limite
          function getLimit(){
@@ -176,7 +188,7 @@
             
             var min_limit_calc = parseFloat(min_limit*exchangeRate);
             var max_limit_clac = parseFloat(max_limit*exchangeRate);
-            $('.limit-show').html("Limit: " + min_limit_calc.toFixed(2) + " " + senderCurrencyCode + " - " + max_limit_clac.toFixed(2) + " " + senderCurrencyCode);
+            $('.limit-show').html("Límite: " + min_limit_calc.toFixed(2) + " " + senderCurrencyCode + " - " + max_limit_clac.toFixed(2) + " " + senderCurrencyCode);
 
         }
 
@@ -211,7 +223,7 @@
         function getFees() {
             var senderCurrencyCode =  acceptVar().senderCurrencyCode;
             var charges = feesCalculation();
-            $('.fees-show').html("Charge: " + parseFloat(charges.fixed_charge).toFixed(2) + " " + senderCurrencyCode +" + " + parseFloat(percentCharge) + "%" + " = "+ parseFloat(charges.total_charge).toFixed(2) + " " + senderCurrencyCode);
+            $('.fees-show').html("Cargo: " + parseFloat(charges.fixed_charge).toFixed(2) + " " + senderCurrencyCode + " + " + parseFloat(percentCharge) + "% = " + parseFloat(charges.total_charge).toFixed(2) + " " + senderCurrencyCode);
         }
 
         function getPreview() {
@@ -237,5 +249,15 @@
                 $('.pay-in-total').text(parseFloat(receiverAmount).toFixed(2) + " " + acceptVar().senderCurrencyCode);
 
             }
+    </script>
+    <script>
+        var amountInput = document.getElementById('amountInput');
+        if (amountInput) {
+            amountInput.addEventListener('input', function() {
+                var inputValue = this.value;
+                var numericValue = inputValue.replace(/[^0-9.]/g, '');
+                this.value = numericValue;
+            });
+        }
     </script>
 @endpush
