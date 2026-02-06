@@ -365,7 +365,7 @@
                     <select class="d-none account-type" id="registerAccountType">
                         <option value="1" {{ $register_old_type === 'personal' ? 'selected' : '' }}>{{ __('Personal Account') }}</option>
                         <option value="2" {{ $register_old_type === 'business' ? 'selected' : '' }}>{{ __('Business Account') }}</option>
-                    </select>
+                                    </select>
 
                     <div class="personal-account select-account" data-select-target="1" style="display: {{ $register_old_type === 'personal' ? 'block' : 'none' }};">
                         <div class="row align-items-center g-4">
@@ -701,69 +701,69 @@
                     <div class="business-account select-account" data-select-target="2" style="display: {{ $register_old_type === 'business' ? 'block' : 'none' }};">
                         <div class="register-doar-form-card">
                             <form action="{{ setRoute('user.register.submit') }}" class="account-form" method="POST">
-                                @csrf
-                                <input type="hidden" name="type" value="business">
-                                <div class="row">
-                                    <div class="col-lg-6 form-group">
-                                        @include('admin.components.form.input', [
-                                            'name' => 'firstname',
-                                            'placeholder' => __('First Name'),
-                                            'value' => old('firstname'),
-                                        ])
-                                    </div>
-                                    <div class="col-lg-6 form-group">
-                                        @include('admin.components.form.input', [
-                                            'name' => 'lastname',
-                                            'placeholder' => __('Last Name'),
-                                            'value' => old('lastname'),
-                                        ])
-                                    </div>
-                                    <div class="col-lg-12 form-group">
+                                        @csrf
+                                        <input type="hidden" name="type" value="business">
+                                        <div class="row">
+                                            <div class="col-lg-6 form-group">
+                                                @include('admin.components.form.input', [
+                                                    'name' => 'firstname',
+                                                    'placeholder' => __('First Name'),
+                                                    'value' => old('firstname'),
+                                                ])
+                                            </div>
+                                            <div class="col-lg-6 form-group">
+                                                @include('admin.components.form.input', [
+                                                    'name' => 'lastname',
+                                                    'placeholder' => __('Last Name'),
+                                                    'value' => old('lastname'),
+                                                ])
+                                            </div>
+                                            <div class="col-lg-12 form-group">
                                         <input type="text" class="form-control form--control" name="company_name" value="{{ old('company_name') }}" placeholder="{{ __('Company Name') }}">
-                                    </div>
-                                    <div class="col-lg-12 form-group">
-                                        @include('admin.components.form.input', [
-                                            'type' => 'email',
-                                            'name' => 'email',
-                                            'placeholder' => __('Email'),
-                                            'value' => old('email'),
-                                        ])
-                                    </div>
-                                    <div class="col-lg-12 form-group">
+                                            </div>
+                                            <div class="col-lg-12 form-group">
+                                                @include('admin.components.form.input', [
+                                                    'type' => 'email',
+                                                    'name' => 'email',
+                                                    'placeholder' => __('Email'),
+                                                    'value' => old('email'),
+                                                ])
+                                            </div>
+                                            <div class="col-lg-12 form-group">
                                         <select name="country" class="form--control select2-auto-tokenize country-select" data-old="{{ old('country', $user_country) }}">
-                                            <option selected disabled>{{ __('Select Country') }}</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-12 form-group show_hide_password">
+                                                    <option selected disabled>{{ __('Select Country') }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-12 form-group show_hide_password">
                                         <input type="password" class="form--control" name="password" placeholder="{{ __('Password') }}" required>
                                         <a href="javascript:void(0)" class="show-pass"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
-                                    </div>
-                                    <div class="col-lg-12 form-group">
-                                        <div class="custom-check-group mb-0">
-                                            <input type="checkbox" id="level-2" name="agree">
+                                            </div>
+                                            <div class="col-lg-12 form-group">
+                                                <div class="custom-check-group mb-0">
+                                                    <input type="checkbox" id="level-2" name="agree">
                                             <label for="level-2" class="mb-0">{{ __('I have read agreed with the') }}
                                                 <a href="{{ route('page.view', 'terms-condition') }}" class="text--base">{{ __('Terms Condition') }}</a>
-                                                <a class="text--base">&</a>
+                                                        <a class="text--base">&</a>
                                                 <a href="{{ route('page.view', 'privacy-policy') }}" class="text--base">{{ __('Privacy Policy') }}</a>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <x-security.google-recaptcha-field />
-                                    <div class="col-lg-12 form-group text-center">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <x-security.google-recaptcha-field />
+                                            <div class="col-lg-12 form-group text-center">
                                         <button type="submit" class="btn--base w-100">{{ __('Register Now') }}</button>
-                                    </div>
-                                    <div class="col-lg-12 text-center">
-                                        <div class="account-item mt-10">
+                                            </div>
+                                            <div class="col-lg-12 text-center">
+                                                <div class="account-item mt-10">
                                             <label>{{ __('Already Have An Account?') }} <a href="{{ setRoute('user.login') }}" class="text--base">{{ __('Login Now') }}</a></label>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
         {{-- Pie: seguridad --}}
         <footer class="register-doar-footer">
@@ -910,7 +910,7 @@
                     $stepLabel.text("{{ __('Paso 2 de 3') }}");
                     setProgressStep(2);
                     initOrUpdateRegisterSlider();
-                } else {
+                    } else {
                     $step0.hide();
                     $step1.show();
                     $step2.hide();

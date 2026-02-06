@@ -6364,11 +6364,8 @@ pre.prettyprint {
     display: block;
   }
 }
-.sidebar:hover {
-  width: 250px;
-}
 .sidebar:hover .sidebar-menu .sidebar-menu-item a {
-  padding: 12px 15px;
+  padding: 6px 15px;
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
@@ -6417,7 +6414,7 @@ pre.prettyprint {
       -ms-flex-pack: center;
           justify-content: center;
   padding-bottom: 15px;
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
 }
 .sidebar-logo::before {
   position: absolute;
@@ -6433,14 +6430,14 @@ pre.prettyprint {
   max-width: 130px;
 }
 .sidebar-logo .sidebar-menu-bar {
-  font-size: 14px;
+  font-size: 1rem;
   color: rgba(0, 0, 0, 0.8274509804);
   background-color: transparent;
   display: none;
 }
 
 .sidebar-menu-wrapper {
-  padding-top: 15px;
+  padding-top: 10px;
 }
 
 .sidebar-menu-header {
@@ -6448,11 +6445,11 @@ pre.prettyprint {
   letter-spacing: 0.05em;
   font-size: 0.6875rem;
   font-weight: 500;
-  margin-bottom: 15px;
+  /* margin-bottom: 10px; */
   padding-left: 10px;
   text-transform: uppercase;
   white-space: nowrap;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 .sidebar-menu-header::before {
   content: "--";
@@ -6473,7 +6470,7 @@ pre.prettyprint {
 
 .sidebar-menu .sidebar-menu-item {
   position: relative;
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
   border-radius: 15px;
 }
 .sidebar-menu .sidebar-menu-item::after {
@@ -6496,10 +6493,10 @@ pre.prettyprint {
           align-items: center;
   color: #000000;
   font-weight: 500;
-  padding: 12px 15px;
+  padding: 6px 15px;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
-  font-size: 16px;
+  font-size: 0.8rem;
 }
 .sidebar-menu .sidebar-menu-item a .menu-icon {
   width: 30px;

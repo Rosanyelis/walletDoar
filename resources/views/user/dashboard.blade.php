@@ -3,7 +3,7 @@
 @section('breadcrumb')
     @include('user.components.breadcrumb',['breadcrumbs' => [
         [
-            'name'  => __("Dashboard"),
+            'name'  => __("Panel"),
             'url'   => setRoute("user.dashboard"),
         ]
     ], 'active' => __("")])
@@ -11,8 +11,8 @@
 
 @section('content')
 <div class="dashboard-wallet"> 
-    <div class="my-wallet ptb-20">
-        <h3 class="title">{{ __("My Wallet") }}</h3>
+    <div class="my-wallet ptb-10">
+        <h3 class="title dashboard-doar-title">{{ __("Mi billetera") }}</h3>
     </div>
     <div class="row">
         @foreach ($userWallet as $item) 
@@ -38,7 +38,7 @@
     </div>
 </div>    
 <div class="dashboard-chart pt-40">
-    <h3 class="title">{{ __("Transaction Overview") }}</h3>
+    <h3 class="title">{{ __("Actividad") }}</h3>
     <div class="row">
         <div class="col-12">
             <div class="chart">
@@ -51,13 +51,13 @@
 </div>
 <div class="dashboard-list-area mt-60 mb-30">
     <div class="dashboard-header-wrapper">
-        <h4 class="title">L{{ __("atest Transactions") }}</h4>
+        <h4 class="title">{{ __("Transacciones recientes") }}</h4>
         <div class="dashboard-btn-wrapper">
             <div class="dashboard-btn">
                 @if (auth()->user()->type == "personal")
-                <a href="{{ setRoute('user.transactions.index','add-money-log') }}" class="btn--base">{{ __("View More") }}</a>
+                <a href="{{ setRoute('user.transactions.index','add-money-log') }}" class="btn--base">{{ __("Ver más") }}</a>
                 @else
-                <a href="{{ setRoute('user.payment.log.index') }}" class="btn--base">{{ __("View More") }}</a>
+                <a href="{{ setRoute('user.payment.log.index') }}" class="btn--base">{{ __("Ver más") }}</a>
                 @endif 
             </div>
         </div>

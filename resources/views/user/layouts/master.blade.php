@@ -12,11 +12,11 @@
         rel="stylesheet">
 
     @include('partials.header-asset')
-
+    <link rel="stylesheet" href="{{ asset('frontend/css/doar/panel.css') }}">
     @stack('css')
 </head>
 
-<body class="{{ selectedLangDir() ?? 'ltr' }}">
+<body class="panel-doar {{ selectedLangDir() ?? 'ltr' }}">
 
 
     <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,7 +35,7 @@
 
     @include('user.partials.side-nav')
 
-    <div class="main-wrapper">
+    <div class="main-wrapper panel-doar-wrapper">
         <div class="main-body-wrapper">
             @include('user.partials.top-nav')
             <div class="body-wrapper">
