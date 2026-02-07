@@ -7,7 +7,7 @@
 @endphp
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('frontend/css/doar/auth.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/doar/register.css') }}">
 @endpush
 
 @section('content')
@@ -368,9 +368,9 @@
                                     </select>
 
                     <div class="personal-account select-account" data-select-target="1" style="display: {{ $register_old_type === 'personal' ? 'block' : 'none' }};">
-                        <div class="row align-items-center g-4">
-                            <div class="col-lg-6">
-                                <div class="register-doar-slider-wrap">
+                        <div class="row align-items-stretch g-2 register-doar-step-cards">
+                            <div class="col-lg-5">
+                                <div class="register-doar-step-card register-doar-slider-wrap">
                                     <div class="swiper register-doar-slider">
                                         <div class="swiper-wrapper">
                                             <div class="swiper-slide ">
@@ -609,8 +609,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="register-doar-form-card register-doar-form-personal">
+                            <div class="col-lg-7">
+                                <div class="register-doar-step-card register-doar-form-card register-doar-form-personal">
                                     <h2 class="register-doar-form-title">{{ __('Crear cuenta personal') }}</h2>
                                     <p class="register-doar-form-subtitle">{{ __('Completa tus datos para crear tu cuenta DOAR') }}</p>
                                     <form action="{{ setRoute('user.register.submit') }}" class="account-form" method="POST">
@@ -936,9 +936,11 @@
                         spaceBetween: 16,
                         loop: true,
                         autoplay: { delay: 4500, disableOnInteraction: false },
-                        pagination: { el: "#registerStep0 .register-doar-slider-pagination", clickable: true }
+                        pagination: { el: "#registerStep0 .register-doar-slider-pagination", clickable: true },
+                        observer: true,
+                        observeParents: true
                     });
-                }, 50);
+                }, 100);
             }
 
             // Slider paso 2 (formulario personal): inicializar cuando el formulario personal esté visible
@@ -958,9 +960,11 @@
                         spaceBetween: 16,
                         loop: true,
                         autoplay: { delay: 4500, disableOnInteraction: false },
-                        pagination: { el: "#registerStep2 .register-doar-slider-pagination", clickable: true }
+                        pagination: { el: "#registerStep2 .register-doar-slider-pagination", clickable: true },
+                        observer: true,
+                        observeParents: true
                     });
-                }, 50);
+                }, 100);
             }
         });
     </script>

@@ -1,0 +1,654 @@
+/**
+ * Register DOAR - Estilos según Figma
+ * Fondo blanco, paleta naranja/amarillo para destacados, gris oscuro para texto
+ */
+
+/* ---------- Sección y layout ---------- */
+.register-doar-section {
+    position: relative;
+    background-color: #f1f5f9;
+    min-height: 100vh;
+    padding: 0 0 2rem;
+    font-family: inherit;
+}
+
+.register-doar-header {
+    background: #FFFFFF;
+    border-bottom: 1px solid #E5E7EB;
+    padding: 1rem 0;
+}
+
+.register-doar-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.register-doar-logo img {
+    max-height: 48px;
+    width: auto;
+    display: block;
+}
+
+/* Indicador de progreso: "Paso 1 de 3" + barra de 3 segmentos */
+.register-doar-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.register-doar-step-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.register-doar-progress {
+    display: flex;
+    gap: 4px;
+    width: 120px;
+}
+
+.register-doar-progress-seg {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #E5E7EB;
+    transition: background 0.2s;
+}
+
+.register-doar-progress-seg--active {
+    background: linear-gradient(90deg, #FFB541 0%, #FCCC01 100%);
+}
+
+.register-doar-body {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 0 3rem;
+}
+
+.register-doar-step {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.register-doar-step--two-cols .row {
+    align-items: stretch;
+}
+
+.register-doar-form-back {
+    margin-bottom: 1rem;
+}
+
+.register-doar-back-link {
+    color: #6B7280;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.register-doar-back-link:hover {
+    color: #EA580C;
+}
+
+/* ---------- Slider / slides (paso redes sociales y paso formulario) ---------- */
+/* Contenedor del slider: recorta para mostrar solo una diapositiva (evita superposición) */
+.register-doar-slider-wrap {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.register-doar-step-card.register-doar-slider-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-doar-step-card .register-doar-slider {
+    flex: 1;
+    min-height: 0;
+}
+
+.register-doar-step-card .register-doar-slider-pagination {
+    flex-shrink: 0;
+}
+
+/* Swiper: contenedor debe recortar y tener tamaño definido (compatible con .swiper sin .swiper-container) */
+.register-doar-slider {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.register-doar-slider .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+.register-doar-slider .swiper-slide {
+    height: auto;
+    flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.register-doar-slide-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.register-doar-slide-icon {
+    flex-shrink: 0;
+}
+
+.register-doar-slide-icon svg {
+    width: 48px;
+    height: 48px;
+    display: block;
+}
+
+.register-doar-slide-text {
+    flex: 1;
+}
+
+.register-doar-slide-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0 0 0.35rem;
+}
+
+.register-doar-slide-desc {
+    font-size: 0.9rem;
+    color: #6B7280;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.register-doar-slider-pagination {
+    margin-top: 1rem;
+}
+
+.register-doar-slider-pagination .swiper-pagination-bullet {
+    background: #D1D5DB;
+    opacity: 1;
+}
+
+.register-doar-slider-pagination .swiper-pagination-bullet-active {
+    background: linear-gradient(90deg, #FFB541 0%, #FCCC01 100%);
+}
+
+/* ---------- Paso "Crea tu cuenta" (redes sociales) ---------- */
+.register-doar-crea-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.register-doar-crea-subtitle {
+    font-size: 0.95rem;
+    color: #6B7280;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.register-doar-crea-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.register-doar-social-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.register-doar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid #E5E7EB;
+    background: #FFFFFF;
+    color: #1F2937;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    width: 100%;
+}
+
+.register-doar-btn:hover {
+    background: #F9FAFB;
+    border-color: #D1D5DB;
+    color: #1F2937;
+}
+
+.register-doar-btn--google {
+    background: #FFFFFF;
+    border-color: #E5E7EB;
+}
+
+.register-doar-btn--google:hover {
+    background: #F3F4F6;
+}
+
+.register-doar-btn--facebook {
+    background: #1877F2;
+    border-color: #1877F2;
+    color: #FFFFFF;
+}
+
+.register-doar-btn--facebook:hover {
+    background: #166FE5;
+    border-color: #166FE5;
+    color: #FFFFFF;
+}
+
+.register-doar-btn--apple {
+    background: #000000;
+    border-color: #000000;
+    color: #FFFFFF;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.register-doar-btn--email {
+    background: linear-gradient(90deg, #FFB541 0%, #FCCC01 100%);
+    border: none;
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+.register-doar-btn--email:hover {
+    opacity: 0.95;
+    color: #FFFFFF;
+}
+
+.register-doar-separator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+}
+
+.register-doar-separator span {
+    flex: 1;
+    height: 1px;
+    background: #E5E7EB;
+}
+
+.register-doar-separator i {
+    font-size: 0.4rem;
+    color: #9CA3AF;
+}
+
+.register-doar-have-account {
+    font-size: 0.9rem;
+    color: #6B7280;
+    margin: 1rem 0 0;
+}
+
+.register-doar-login-link {
+    color: #CDA705;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.register-doar-login-link:hover {
+    color: #C2410C;
+}
+
+.register-doar-terms {
+    font-size: 0.8rem;
+    color: #6B7280;
+    margin: 1rem 0 0;
+}
+
+.register-doar-terms-cb {
+    margin-right: 6px;
+    vertical-align: middle;
+    accent-color: #EA580C;
+}
+
+.register-doar-terms-link {
+    color: #CDA705;
+    text-decoration: underline;
+}
+
+.register-doar-terms-link:hover {
+    color: #C2410C;
+}
+
+/* ---------- Paso 1: tipo de cuenta (Figma) ---------- */
+.register-doar-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.register-doar-subtitle {
+    font-size: 0.95rem;
+    color: #6B7280;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.register-doar-cards {
+    margin-top: 0.5rem;
+}
+
+/* Tarjetas: bordes muy redondeados, sombra suave; seleccionada = borde naranja/amarillo */
+.register-doar-card {
+    position: relative;
+    background: #FFFFFF;
+    border: 2px solid #E5E7EB;
+    border-radius: 20px;
+    padding: 2rem;
+    height: 100%;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.register-doar-card:hover {
+    border-color: #D1D5DB;
+}
+
+.register-doar-card--selected {
+    border-color: #FCCC01;
+    box-shadow: 0 4px 24px rgba(252, 204, 1, 0.25);
+}
+
+/* Icono de verificación: solo visible en tarjeta seleccionada (Figma: no seleccionada no lo tiene) */
+.register-doar-card-check {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #E5E7EB;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: background 0.2s, color 0.2s;
+    opacity: 0;
+}
+
+.register-doar-card--selected .register-doar-card-check {
+    opacity: 1;
+    background: linear-gradient(90deg, #FFB541 0%, #FCCC01 100%);
+    color: #FFFFFF;
+}
+
+/* Icono de cuenta: centrado (Figma) */
+.register-doar-card-icon {
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-doar-card-icon svg {
+    width: 67px;
+    height: 67px;
+    display: block;
+}
+
+.register-doar-card-icon i {
+    font-size: 3rem;
+    color: #1E1E1E;
+}
+
+/* Título y descripción de tarjeta: centrados, texto justificado (Figma) */
+.register-doar-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.register-doar-card-desc {
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* Botón tarjeta: no seleccionada = blanco + borde gris oscuro; seleccionada = naranja/amarillo + texto blanco, ancho completo */
+.register-doar-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: 1px solid #374151;
+    background: #FFFFFF;
+    color: #374151;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.register-doar-card-btn:hover {
+    background: #F3F4F6;
+    border-color: #1E1E1E;
+    color: #1E1E1E;
+    box-shadow: 0 2px 8px rgba(55, 65, 81, 0.15);
+    transform: translateY(-1px);
+}
+
+.register-doar-card-btn--primary {
+    background: linear-gradient(90deg, #FFB541 0%, #FCCC01 100%);
+    border: none;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(252, 204, 1, 0.35);
+}
+
+.register-doar-card-btn--primary:hover {
+    background: linear-gradient(90deg, #F5A832 0%, #E6B800 100%);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(252, 204, 1, 0.45);
+    transform: translateY(-1px);
+}
+
+/* ---------- Paso 2/3: formulario — estructura tipo tarjeta seleccionable ---------- */
+.register-doar-form-wrap {
+    max-width: 100%;
+}
+
+/* Tarjetas del paso formulario (slider + form): Figma — fondo blanco, esquinas muy redondeadas, sombra sutil */
+.register-doar-step-cards {
+    align-items: stretch;
+}
+
+/* Separación clara y consistente entre slider y card (Figma) */
+.register-doar-step-cards.row {
+    --bs-gutter-x: 2rem;
+}
+
+/* .register-doar-step-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    height: 100%;
+    min-height: 0;
+} */
+
+.register-doar-form-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Cuando el form card es también step-card, unificar con la misma estructura */
+.register-doar-form-card.register-doar-step-card {
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.register-doar-form-personal .register-doar-form-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 0.35rem;
+}
+
+.register-doar-form-subtitle {
+    font-size: 0.95rem;
+    color: #6B7280;
+    margin-bottom: 1.5rem;
+}
+
+.register-doar-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.register-doar-form-control,
+.register-doar-form-card .form--control {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #1F2937;
+    background: #FFFFFF;
+}
+
+.register-doar-form-control:focus,
+.register-doar-form-card .form--control:focus {
+    border-color: #EA580C;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+    outline: none;
+}
+
+.register-doar-password-wrap {
+    position: relative;
+}
+
+.register-doar-password-wrap .show-pass {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 2;
+    text-decoration: none;
+}
+
+.register-doar-password-wrap .show-pass:hover {
+    color: #EA580C;
+}
+
+.register-doar-password-requirements {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem;
+    color: #6B7280;
+}
+
+.register-doar-recaptcha-wrap {
+    margin-bottom: 1rem;
+}
+
+.register-doar-form-terms {
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.register-doar-form-terms .register-doar-terms-link {
+    color: #CDA705;
+}
+
+.register-doar-btn-submit {
+    width: 100%;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #FFB541 0%, #FCCC01 100%);
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.register-doar-btn-submit:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+    color: #FFFFFF;
+}
+
+/* ---------- Footer (Figma: icono candado naranja/amarillo, texto centrado) ---------- */
+.register-doar-footer {
+    text-align: center;
+    padding: 1.25rem;
+    font-size: 0.9rem;
+    color: #374151;
+    background: #FFFFFF;
+}
+
+.register-doar-footer-icon {
+    margin-right: 0.35rem;
+    color: #FCCC01;
+}
+
+.register-doar-footer strong {
+    color: #1F2937;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991px) {
+    .register-doar-slider-wrap {
+        margin-bottom: 1.5rem;
+    }
+    .register-doar-crea-card {
+        padding: 1.5rem;
+    }
+    .register-doar-card {
+        padding: 1.5rem;
+    }
+    .register-doar-title {
+        font-size: 1.5rem;
+    }
+}
