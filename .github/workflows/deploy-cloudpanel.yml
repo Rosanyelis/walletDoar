@@ -1,26 +1,30 @@
-name: Deploy to CloudPanel
-
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Test Connection and Deploy
+- name: Test Connection and Deploy
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.SERVER_PORT || '22' }} rossdigital-walletdoar@${{ secrets.SERVER_HOST }} << 'EOF'
-            cd ${{ secrets.DEPLOY_PATH }}
-            echo "Conexión exitosa. Usuario: $(whoami)"
+            # Forzar que el script se detenga si hay error
+            set -e
+
+            # Validar que la ruta existe antes de entrar
+            if [ -d "${{ secrets.DEPLOY_PATH }}" ]; then
+              cd ${{ secrets.DEPLOY_PATH }}
+              echo "Directorio encontrado: $(pwd)"
+            else
+              echo "ERROR: La ruta ${{ secrets.DEPLOY_PATH }} no existe en el servidor."
+              exit 1
+            fi
+
+            echo "Iniciando despliegue de Git..."
+            # Si es la primera vez, asegúrate de que el repo esté inicializado
+            # git fetch y reset para asegurar limpieza
             git fetch origin main
             git reset --hard origin/main
-            composer install --no-dev --optimize-autoloader
+
+            echo "Instalando dependencias de PHP..."
+            composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "Ejecutando Artisan..."
             php artisan migrate --force
             php artisan optimize
-          EOF
+            
+            echo "¡Despliegue completado con éxito!"
+EOF
