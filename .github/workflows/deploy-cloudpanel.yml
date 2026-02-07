@@ -2,45 +2,25 @@ name: Deploy to CloudPanel
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   deploy:
-    name: Deploy to Server
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup SSH Agent
+      - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy via SSH
-        env:
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_USER: 'rossdigital-walletdoar' # Puedes ponerlo directo aquí para probar
-          SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      - name: Test Connection and Deploy
         run: |
-          # El parámetro -T elimina el error de "Pseudo-terminal will not be allocated"
-          ssh -T -o StrictHostKeyChecking=no -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" << EOF
-            set -e
-            cd $DEPLOY_PATH
-            
-            # Si dploy falla o no está, ejecutamos los comandos de Laravel
-            if command -v dploy &> /dev/null; then
-              dploy deploy main
-            else
-              echo "Ejecutando despliegue manual..."
-              git fetch origin main
-              git reset --hard origin/main
-              composer install --no-dev --optimize-autoloader --no-interaction
-              php artisan migrate --force
-              php artisan optimize
-            fi
-            
+          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SERVER_PORT || '22' }} rossdigital-walletdoar@${{ secrets.SERVER_HOST }} << 'EOF'
+            cd ${{ secrets.DEPLOY_PATH }}
+            echo "Conexión exitosa. Usuario: $(whoami)"
+            git fetch origin main
+            git reset --hard origin/main
+            composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            php artisan optimize
           EOF
