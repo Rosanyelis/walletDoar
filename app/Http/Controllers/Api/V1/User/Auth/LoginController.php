@@ -54,11 +54,11 @@ class LoginController extends Controller
         }
 
         $validated = $validator->validate();
-        if(!User::where($this->username(),$validated['credentials'])->exists()) {
+        if(!User::where('email',$validated['credentials'])->exists()) {
             return Response::error([__('User doesn\'t exists!')],[],404);
         }
 
-        $user = User::where($this->username(),$validated['credentials'])->first();
+        $user = User::where('email',$validated['credentials'])->first();
         if(!$user) return Response::error([__('User doesn\'t exists')]);
 
         if(Hash::check($validated['password'],$user->password)) {
