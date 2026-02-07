@@ -1,13 +1,76 @@
-name: Test SSH
-on: workflow_dispatch
+name: Simple Laravel Deploy
+
+on:
+  push:
+    branches: [main]
+
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: webfactory/ssh-agent@v0.9.0
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - run: |
-          ssh -o StrictHostKeyChecking=no \
-              ${{ secrets.SERVER_USER || 'walletdoar' }}@${{ secrets.SERVER_HOST }} \
-              "echo 'SSH funciona'"
+
+      - name: Add to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        env:
+          SSH_HOST: ${{ secrets.SERVER_HOST }}
+          SSH_USER: ${{ secrets.SERVER_USER || 'walletdoar' }}
+          SSH_PORT: ${{ secrets.SERVER_PORT || '22' }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          # Comando SSH
+          SSH_CMD="ssh -p $SSH_PORT -o StrictHostKeyChecking=accept-new $SSH_USER@$SSH_HOST"
+          
+          # 1. Crear timestamp para la release
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          RELEASE_PATH="$DEPLOY_PATH/releases/$TIMESTAMP"
+          
+          # 2. Crear directorios
+          $SSH_CMD "mkdir -p $RELEASE_PATH $DEPLOY_PATH/shared/storage $DEPLOY_PATH/shared/bootstrap/cache"
+          
+          # 3. Copiar archivos (forma más simple)
+          scp -P $SSH_PORT -r -o StrictHostKeyChecking=accept-new \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=node_modules \
+            --exclude=storage \
+            --exclude=bootstrap/cache \
+            --exclude=.env \
+            ./* $SSH_USER@$SSH_HOST:$RELEASE_PATH/
+          
+          # 4. Configurar enlaces y Laravel
+          $SSH_CMD "
+            cd $RELEASE_PATH
+            # Enlaces
+            rm -rf storage && ln -nfs $DEPLOY_PATH/shared/storage storage
+            rm -rf bootstrap/cache && ln -nfs $DEPLOY_PATH/shared/bootstrap/cache bootstrap/cache
+            [ -f $DEPLOY_PATH/shared/.env ] && ln -nfs $DEPLOY_PATH/shared/.env .env
+            
+            # Composer
+            composer install --no-dev --optimize-autoloader --no-interaction
+            
+            # Laravel
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+          "
+          
+          # 5. Actualizar symlink
+          $SSH_CMD "
+            cd $DEPLOY_PATH
+            rm -f current
+            ln -nfs releases/$TIMESTAMP current
+          "
+          
+          echo "✅ Deploy completado!"
