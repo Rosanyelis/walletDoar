@@ -1,84 +1,260 @@
-name: Simple Laravel Deploy
+# =============================================================================
+# Despliegue optimizado Laravel a CloudPanel con releases y enlaces simbólicos
+# =============================================================================
+#
+# CONFIGURACIÓN EN GITHUB (Settings → Secrets and variables → Actions):
+#   - SSH_PRIVATE_KEY: clave privada SSH del usuario walletdoar
+#   - SERVER_HOST: IP o dominio del servidor
+#   - SERVER_USER: (opcional) usuario SSH; por defecto walletdoar
+#   - SERVER_PORT: (opcional) puerto SSH; por defecto 22
+#   - DEPLOY_PATH: ruta base en el servidor, ej: /home/walletdoar/htdocs/tudominio.com
+#
+# CONFIGURACIÓN EN EL SERVIDOR:
+#   1. Estructura recomendada en $DEPLOY_PATH:
+#      ├── current -> releases/20250207012345_abc123 (symlink)
+#      ├── releases/
+#      │   └── 20250207012345_abc123/
+#      └── shared/
+#          ├── storage/    (directorio compartido)
+#          ├── .env        (archivo compartido, NO se toca en deploys)
+#          └── bootstrap/cache/
+#
+#   2. CloudPanel debe apuntar a: $DEPLOY_PATH/current/public
+#
+# =============================================================================
+
+name: Optimized Laravel Deploy
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
+    name: Deploy Laravel Application
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup SSH
+      # Paso 1: Checkout del código
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Paso 2: Configurar SSH (mismo método que funciona)
+      - name: Configurar SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Configurar known_hosts
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-      
-      - name: Deploy
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      # Paso 3: Intentar primero con dploy (para compatibilidad)
+      - name: Desplegar con dploy (CloudPanel)
         env:
-          SSH_HOST: ${{ secrets.SERVER_HOST }}
-          SSH_USER: ${{ secrets.SERVER_USER || 'walletdoar' }}
-          SSH_PORT: ${{ secrets.SERVER_PORT || '22' }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER || 'walletdoar' }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
+        run: |
+          ssh -o StrictHostKeyChecking=accept-new \
+              -p "$SERVER_PORT" \
+              "$SERVER_USER@$SERVER_HOST" \
+              'dploy deploy main'
+        continue-on-error: true
+
+      # Paso 4: Si dploy falla, usar método optimizado con releases
+      - name: Desplegar con releases y symlinks (optimizado)
+        if: failure()
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER || 'walletdoar' }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
+          # Validar configuración
+          if [ -z "$DEPLOY_PATH" ]; then
+            echo "❌ ERROR: DEPLOY_PATH no configurado en GitHub Secrets"
+            echo "Configura DEPLOY_PATH (ej: /home/walletdoar/htdocs/tudominio.com)"
+            exit 1
+          fi
+
+          # Generar nombre de release
+          TIMESTAMP=$(date +"%Y%m%d%H%M%S")
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          RELEASE_NAME="${TIMESTAMP}_${COMMIT_HASH}"
+          RELEASE_PATH="$DEPLOY_PATH/releases/$RELEASE_NAME"
+          
+          echo "🚀 Iniciando deploy optimizado"
+          echo "📁 Release: $RELEASE_NAME"
+          echo "📍 Ruta: $RELEASE_PATH"
+
           # Comando SSH base
-          SSH_CMD="ssh -i ~/.ssh/deploy_key -p $SSH_PORT -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST"
+          SSH_CMD="ssh -o StrictHostKeyChecking=accept-new -p $SERVER_PORT $SERVER_USER@$SERVER_HOST"
           
-          echo "🚀 Iniciando deploy..."
-          
-          # 1. Verificar que .env existe
+          # 1. Preparar estructura en servidor
+          echo "📁 Preparando estructura..."
           $SSH_CMD "
-            if [ ! -f '$DEPLOY_PATH/.env' ]; then
-              echo '❌ ERROR: No existe .env en $DEPLOY_PATH/.env'
-              echo 'Por favor, crea el archivo .env manualmente antes del deploy'
-              exit 1
+            # Crear directorios base si no existen
+            mkdir -p '$DEPLOY_PATH'/releases
+            mkdir -p '$DEPLOY_PATH'/shared
+            mkdir -p '$DEPLOY_PATH'/shared/storage/{app,framework/{cache,sessions,views},logs}
+            mkdir -p '$DEPLOY_PATH'/shared/bootstrap/cache
+            
+            # Verificar que existe .env en shared
+            if [ ! -f '$DEPLOY_PATH/shared/.env' ]; then
+              echo '⚠️  ADVERTENCIA: No hay .env en $DEPLOY_PATH/shared/.env'
+              echo 'Crea el archivo manualmente antes del primer deploy'
             fi
-            echo '✅ .env encontrado (NO será modificado)'
+            
+            # Crear directorio de release
+            mkdir -p '$RELEASE_PATH'
           "
-          
-          # 2. Hacer git pull
-          echo "🔄 Actualizando código..."
-          $SSH_CMD "
-            cd '$DEPLOY_PATH'
-            git reset --hard
-            git pull origin main
-          "
-          
-          # 3. Instalar dependencias
-          echo "📦 Instalando dependencias..."
-          $SSH_CMD "
-            cd '$DEPLOY_PATH'
-            composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-          "
-          
-          # 4. Configurar Laravel (sin tocar .env)
+
+          # 2. Transferir archivos con rsync (más eficiente)
+          echo "📤 Sincronizando archivos..."
+          rsync -avz \
+            -e "ssh -p $SERVER_PORT -o StrictHostKeyChecking=accept-new" \
+            --exclude='/.git' \
+            --exclude='/.github' \
+            --exclude='/node_modules' \
+            --exclude='/storage' \
+            --exclude='/bootstrap/cache' \
+            --exclude='/.env' \
+            --exclude='/.env.*' \
+            --exclude='*.log' \
+            --exclude='*.sqlite' \
+            --exclude='deploy.php' \
+            --exclude='_ide_helper*' \
+            --exclude='docker-compose*' \
+            --progress \
+            ./ \
+            "$SERVER_USER@$SERVER_HOST:$RELEASE_PATH/"
+
+          # 3. Configurar Laravel en el servidor
           echo "⚙️ Configurando Laravel..."
           $SSH_CMD "
-            cd '$DEPLOY_PATH'
+            cd '$RELEASE_PATH'
             
-            # Asegurar enlaces simbólicos
-            rm -rf storage 2>/dev/null || true
-            ln -nfs '$DEPLOY_PATH/shared/storage' storage 2>/dev/null || true
+            # Crear enlaces simbólicos a directorios compartidos
+            rm -rf storage && ln -nfs '$DEPLOY_PATH/shared/storage' storage
+            rm -rf bootstrap/cache && ln -nfs '$DEPLOY_PATH/shared/bootstrap/cache' bootstrap/cache
             
-            rm -rf bootstrap/cache 2>/dev/null || true
-            ln -nfs '$DEPLOY_PATH/shared/bootstrap/cache' bootstrap/cache 2>/dev/null || true
+            # Enlazar .env desde shared (sin modificarlo)
+            if [ -f '$DEPLOY_PATH/shared/.env' ]; then
+              rm -f .env
+              ln -nfs '$DEPLOY_PATH/shared/.env' .env
+              echo '✅ .env enlazado desde shared (sin modificaciones)'
+            else
+              echo '❌ ERROR: No existe .env en shared. Crea $DEPLOY_PATH/shared/.env manualmente'
+              exit 1
+            fi
             
-            # Migraciones y optimización
+            # Configurar permisos básicos
+            chmod -R 775 storage
+            chmod -R 775 bootstrap/cache
+            
+            # Establecer ownership adecuado (usuario:www-data)
+            chown -R $SERVER_USER:www-data storage bootstrap/cache 2>/dev/null || true
+          "
+
+          # 4. Instalar dependencias y optimizar
+          echo "📦 Instalando dependencias..."
+          $SSH_CMD "
+            cd '$RELEASE_PATH'
+            
+            # Instalar Composer
+            composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-progress
+            
+            # Solo generar APP_KEY si no existe en .env
+            if ! grep -q '^APP_KEY=base64:' '$DEPLOY_PATH/shared/.env' 2>/dev/null; then
+              echo '⚠️  Generando APP_KEY...'
+              php artisan key:generate --force
+            fi
+            
+            # Ejecutar migraciones
             php artisan migrate --force
+            
+            # Limpiar cache
+            php artisan cache:clear
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            
+            # Optimizar para producción
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            
+            # Crear storage link
             php artisan storage:link
+            
+            echo '✅ Dependencias instaladas y optimizadas'
           "
-          
-          # 5. Permisos
-          echo "🔒 Configurando permisos..."
+
+          # 5. Actualizar enlace simbólico (deploy atómico)
+          echo "🔗 Actualizando symlink..."
           $SSH_CMD "
-            chmod -R 775 '$DEPLOY_PATH/storage'
-            chmod -R 775 '$DEPLOY_PATH/bootstrap/cache'
+            cd '$DEPLOY_PATH'
+            
+            # Cambiar symlink de forma atómica
+            ln -nfs 'releases/$RELEASE_NAME' current_tmp && mv -f current_tmp current
+            
+            echo '✅ Symlink actualizado a: releases/$RELEASE_NAME'
           "
-          
-          echo "✅ Deploy completado!"
+
+          # 6. Limpiar releases antiguas (mantener 5 más recientes)
+          echo "🧹 Limpiando releases antiguas..."
+          $SSH_CMD "
+            cd '$DEPLOY_PATH/releases'
+            
+            # Contar releases y mantener solo las 5 más recientes
+            RELEASE_COUNT=\$(ls -1t | wc -l)
+            if [ \$RELEASE_COUNT -gt 5 ]; then
+              ls -1t | tail -n +\$(($RELEASE_COUNT - 4)) | while read OLD_RELEASE; do
+                if [ -d \"\$OLD_RELEASE\" ] && [ \"\$OLD_RELEASE\" != '$RELEASE_NAME' ]; then
+                  echo '🗑️  Eliminando: '\$OLD_RELEASE
+                  rm -rf \"\$OLD_RELEASE\"
+                fi
+              done
+            fi
+            
+            echo '📊 Releases actuales:'
+            ls -1t | head -5
+          "
+
+          # 7. Verificar el deploy
+          echo "✅ Verificando deploy..."
+          $SSH_CMD "
+            echo '=== VERIFICACIÓN ==='
+            echo ''
+            echo '📌 Ruta actual:'
+            ls -la '$DEPLOY_PATH/current'
+            echo ''
+            echo '📌 .env (verificar enlace):'
+            ls -la '$DEPLOY_PATH/current/.env'
+            echo ''
+            echo '📌 Versión Laravel:'
+            cd '$DEPLOY_PATH/current' && php artisan --version
+            echo ''
+            echo '📌 Estado de rutas:'
+            cd '$DEPLOY_PATH/current' && php artisan route:list --compact 2>/dev/null | wc -l | xargs echo 'Total rutas:'
+            echo ''
+            echo '✅ Deploy completado exitosamente'
+          "
+
+          echo "🎉 ¡Deploy optimizado completado!"
+          echo "🕐 Release: $RELEASE_NAME"
+          echo "📅 $(date)"
+
+      # Paso 5: Verificación final (siempre se ejecuta)
+      - name: Verificación final
+        if: always()
+        run: |
+          echo "=== RESUMEN DEL DEPLOY ==="
+          echo "Hora: $(date)"
+          echo "Estado: ${{ job.status }}"
+          echo "=========================="
