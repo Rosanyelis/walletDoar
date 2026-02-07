@@ -62,46 +62,7 @@ jobs:
           # Comando SSH base
           SSH_CMD="ssh -o StrictHostKeyChecking=accept-new -p $SERVER_PORT $SERVER_USER@$SERVER_HOST"
           
-          # 1. Verificar que existe .env (NO se tocará)
-          echo "🔍 Verificando configuración..."
-          $SSH_CMD "
-            if [ ! -f '$DEPLOY_PATH/.env' ]; then
-              echo '❌ ERROR: No existe .env en $DEPLOY_PATH/.env'
-              echo 'Por favor, crea el archivo .env manualmente antes del primer deploy'
-              exit 1
-            else
-              echo '✅ .env encontrado (NO será modificado)'
-              # Mostrar solo primera línea del .env (sin exponer datos sensibles)
-              head -1 '$DEPLOY_PATH/.env' | grep -o 'APP_[A-Z_]*=.*' || echo '📄 .env existe'
-            fi
-            
-            # Verificar que es un repositorio git
-            if [ ! -d '$DEPLOY_PATH/.git' ]; then
-              echo '⚠️  No es un repositorio git, inicializando...'
-              cd '$DEPLOY_PATH'
-              git init
-              git remote add origin '$(git config --get remote.origin.url)' 2>/dev/null || true
-            fi
-          "
-
-          # 2. Crear backup rápido (opcional)
-          echo "💾 Creando backup rápido..."
-          $SSH_CMD "
-            BACKUP_DIR='$DEPLOY_PATH/backup_$(date +%Y%m%d_%H%M%S)'
-            mkdir -p \"\$BACKUP_DIR\"
-            
-            # Copiar solo lo esencial (excluyendo node_modules, vendor, etc.)
-            cp -r '$DEPLOY_PATH'/app \"\$BACKUP_DIR/\" 2>/dev/null || true
-            cp -r '$DEPLOY_PATH'/config \"\$BACKUP_DIR/\" 2>/dev/null || true
-            cp -r '$DEPLOY_PATH'/database \"\$BACKUP_DIR/\" 2>/dev/null || true
-            cp -r '$DEPLOY_PATH'/resources \"\$BACKUP_DIR/\" 2>/dev/null || true
-            cp -r '$DEPLOY_PATH'/routes \"\$BACKUP_DIR/\" 2>/dev/null || true
-            cp '$DEPLOY_PATH'/composer.json \"\$BACKUP_DIR/\" 2>/dev/null || true
-            
-            echo '✅ Backup creado en: '\$BACKUP_DIR
-          "
-
-          # 3. Actualizar código con git pull
+          # 2. Actualizar código con git pull
           echo "🔄 Actualizando código..."
           $SSH_CMD "
             cd '$DEPLOY_PATH'
