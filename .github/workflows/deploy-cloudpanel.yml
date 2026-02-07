@@ -1,4 +1,4 @@
-name: Deploy to CloudPanel
+name: Deploy to CloudPanel 
 
 on:
   push:
