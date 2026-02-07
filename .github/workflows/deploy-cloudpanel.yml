@@ -8,19 +8,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
+      
       - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add to known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      
       - name: Deploy
         env:
           SSH_HOST: ${{ secrets.SERVER_HOST }}
@@ -28,49 +24,61 @@ jobs:
           SSH_PORT: ${{ secrets.SERVER_PORT || '22' }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          # Comando SSH
-          SSH_CMD="ssh -p $SSH_PORT -o StrictHostKeyChecking=accept-new $SSH_USER@$SSH_HOST"
+          # Comando SSH base
+          SSH_CMD="ssh -i ~/.ssh/deploy_key -p $SSH_PORT -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST"
           
-          # 1. Crear timestamp para la release
-          TIMESTAMP=$(date +%Y%m%d%H%M%S)
-          RELEASE_PATH="$DEPLOY_PATH/releases/$TIMESTAMP"
+          echo "🚀 Iniciando deploy..."
           
-          # 2. Crear directorios
-          $SSH_CMD "mkdir -p $RELEASE_PATH $DEPLOY_PATH/shared/storage $DEPLOY_PATH/shared/bootstrap/cache"
-          
-          # 3. Copiar archivos (forma más simple)
-          scp -P $SSH_PORT -r -o StrictHostKeyChecking=accept-new \
-            --exclude=.git \
-            --exclude=.github \
-            --exclude=node_modules \
-            --exclude=storage \
-            --exclude=bootstrap/cache \
-            --exclude=.env \
-            ./* $SSH_USER@$SSH_HOST:$RELEASE_PATH/
-          
-          # 4. Configurar enlaces y Laravel
+          # 1. Verificar que .env existe
           $SSH_CMD "
-            cd $RELEASE_PATH
-            # Enlaces
-            rm -rf storage && ln -nfs $DEPLOY_PATH/shared/storage storage
-            rm -rf bootstrap/cache && ln -nfs $DEPLOY_PATH/shared/bootstrap/cache bootstrap/cache
-            [ -f $DEPLOY_PATH/shared/.env ] && ln -nfs $DEPLOY_PATH/shared/.env .env
+            if [ ! -f '$DEPLOY_PATH/.env' ]; then
+              echo '❌ ERROR: No existe .env en $DEPLOY_PATH/.env'
+              echo 'Por favor, crea el archivo .env manualmente antes del deploy'
+              exit 1
+            fi
+            echo '✅ .env encontrado (NO será modificado)'
+          "
+          
+          # 2. Hacer git pull
+          echo "🔄 Actualizando código..."
+          $SSH_CMD "
+            cd '$DEPLOY_PATH'
+            git reset --hard
+            git pull origin main
+          "
+          
+          # 3. Instalar dependencias
+          echo "📦 Instalando dependencias..."
+          $SSH_CMD "
+            cd '$DEPLOY_PATH'
+            composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+          "
+          
+          # 4. Configurar Laravel (sin tocar .env)
+          echo "⚙️ Configurando Laravel..."
+          $SSH_CMD "
+            cd '$DEPLOY_PATH'
             
-            # Composer
-            composer install --no-dev --optimize-autoloader --no-interaction
+            # Asegurar enlaces simbólicos
+            rm -rf storage 2>/dev/null || true
+            ln -nfs '$DEPLOY_PATH/shared/storage' storage 2>/dev/null || true
             
-            # Laravel
+            rm -rf bootstrap/cache 2>/dev/null || true
+            ln -nfs '$DEPLOY_PATH/shared/bootstrap/cache' bootstrap/cache 2>/dev/null || true
+            
+            # Migraciones y optimización
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            php artisan storage:link
           "
           
-          # 5. Actualizar symlink
+          # 5. Permisos
+          echo "🔒 Configurando permisos..."
           $SSH_CMD "
-            cd $DEPLOY_PATH
-            rm -f current
-            ln -nfs releases/$TIMESTAMP current
+            chmod -R 775 '$DEPLOY_PATH/storage'
+            chmod -R 775 '$DEPLOY_PATH/bootstrap/cache'
           "
           
           echo "✅ Deploy completado!"
