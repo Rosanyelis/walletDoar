@@ -22,46 +22,25 @@ jobs:
       - name: Deploy via SSH
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_USER: ${{ secrets.SERVER_USER || 'walletdoar' }}
+          SERVER_USER: 'rossdigital-walletdoar' # Puedes ponerlo directo aquí para probar
           SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          # 1. Validar que las variables críticas existan
-          if [ -z "$SERVER_HOST" ] || [ -z "$DEPLOY_PATH" ]; then
-            echo "ERROR: SERVER_HOST o DEPLOY_PATH no están configurados en los Secrets."
-            exit 1
-          fi
-
-          # 2. Ejecutar comandos en el servidor
-          # Usamos StrictHostKeyChecking=no para evitar que el prompt de confirmación detenga el flujo
-          ssh -o StrictHostKeyChecking=no -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" << EOF
+          # El parámetro -T elimina el error de "Pseudo-terminal will not be allocated"
+          ssh -T -o StrictHostKeyChecking=no -p "$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" << EOF
             set -e
-            echo "Iniciando despliegue en: $DEPLOY_PATH"
-            
             cd $DEPLOY_PATH
-
-            # Intentar usar dploy si está disponible, de lo contrario usar git manual
+            
+            # Si dploy falla o no está, ejecutamos los comandos de Laravel
             if command -v dploy &> /dev/null; then
-              echo "Usando dploy para el despliegue..."
               dploy deploy main
             else
-              echo "dploy no encontrado. Iniciando fallback manual con Git..."
-              
-              # Actualizar código
+              echo "Ejecutando despliegue manual..."
               git fetch origin main
               git reset --hard origin/main
-              
-              # Instalar dependencias de PHP
               composer install --no-dev --optimize-autoloader --no-interaction
-              
-              # Comandos de Laravel
               php artisan migrate --force
-              
-              # Optimización de caché
-              php artisan config:cache
-              php artisan route:cache
-              php artisan view:cache
-              
-              echo "Despliegue manual completado con éxito."
+              php artisan optimize
             fi
+            
           EOF
