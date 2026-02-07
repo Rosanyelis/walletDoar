@@ -38,6 +38,7 @@ Route::get('/', function () {
 Route::controller(SiteController::class)->group(function(){
     // URLs del sitio público (ver comentario al inicio del archivo).
     Route::get('developer','developer')->name('developer');
+    Route::get('api-docs', [App\Http\Controllers\ApiDocsController::class, 'index'])->name('api-docs');
     Route::get('about-us','aboutUs')->name('aboutUs');
     Route::get('services','services')->name('services');
     Route::get('web-journal','webJournal')->name('webJournal');

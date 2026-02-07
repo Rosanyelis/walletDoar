@@ -50,6 +50,7 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\Api\V1\HandleLocalization::class,
+            \App\Http\Middleware\ApiTracker::class,
         ],
     ];
 

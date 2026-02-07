@@ -6,7 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "authorizenet/authorizenet": "2.0.3",
         "buglinjo/laravel-webp": "^2.3",
+        "darkaonline/l5-swagger": "^8.6",
         "doctrine/dbal": "^3.1",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
@@ -16,15 +18,14 @@
         "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.1",
+        "league/flysystem-aws-s3-v3": "^3.30",
         "maatwebsite/excel": "^3.1",
         "pragmarx/google2fa": "^8.0",
         "pusher/pusher-php-server": "^7.2",
         "pusher/pusher-push-notifications": "^2.0",
         "srmklive/paypal": "^3.0",
         "stripe/stripe-php": "^10.3",
-        "torann/geoip": "^3.0",
-        "authorizenet/authorizenet": "2.0.3",
-        "league/flysystem-aws-s3-v3": "^3.30"
+        "torann/geoip": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
