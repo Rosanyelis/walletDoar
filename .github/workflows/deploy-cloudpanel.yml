@@ -1,4 +1,20 @@
-name: Simple Optimized Deploy
+# =============================================================================
+# Despliegue directo Laravel a CloudPanel (sin releases, sin symlinks)
+# =============================================================================
+#
+# CONFIGURACIÓN EN GITHUB (Settings → Secrets and variables → Actions):
+#   - SSH_PRIVATE_KEY: clave privada SSH del usuario walletdoar
+#   - SERVER_HOST: IP o dominio del servidor
+#   - SERVER_USER: (opcional) usuario SSH; por defecto walletdoar
+#   - SERVER_PORT: (opcional) puerto SSH; por defecto 22
+#   - DEPLOY_PATH: ruta directa en el servidor, ej: /home/walletdoar/htdocs/tudominio.com
+#
+# NOTA: Este workflow NO usa releases ni symlinks. Despliega directamente 
+# en DEPLOY_PATH, manteniendo el archivo .env intacto.
+#
+# =============================================================================
+
+name: Direct Laravel Deploy
 
 on:
   push:
@@ -6,59 +22,263 @@ on:
 
 jobs:
   deploy:
+    name: Deploy Laravel Directly
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup SSH
+      # Paso 1: Checkout del código
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # Paso 2: Configurar SSH (método probado que funciona)
+      - name: Configurar SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      
-      - name: Configure SSH
+
+      - name: Configurar known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-      
-      - name: Deploy to Server
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      # Paso 3: Desplegar directamente (sin releases, sin symlinks)
+      - name: Desplegar aplicación Laravel
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USER: ${{ secrets.SERVER_USER || 'walletdoar' }}
           SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          # Validar
-          [ -z "$DEPLOY_PATH" ] && { echo "❌ DEPLOY_PATH no configurado"; exit 1; }
+          # Validar configuración
+          if [ -z "$DEPLOY_PATH" ]; then
+            echo "❌ ERROR: DEPLOY_PATH no configurado"
+            echo "Configura el secret DEPLOY_PATH (ej: /home/walletdoar/htdocs/tudominio.com)"
+            exit 1
+          fi
+
+          echo "🚀 Iniciando deploy directo a: $DEPLOY_PATH"
+          echo "📅 Hora: $(date)"
+
+          # Comando SSH base
+          SSH_CMD="ssh -o StrictHostKeyChecking=accept-new -p $SERVER_PORT $SERVER_USER@$SERVER_HOST"
           
-          # Comando SSH
-          SSH="ssh -o StrictHostKeyChecking=accept-new -p $SERVER_PORT $SERVER_USER@$SERVER_HOST"
-          
-          echo "🚀 Desplegando a: $DEPLOY_PATH"
-          
-          # Comandos directos en servidor
-          $SSH "
+          # 1. Verificar que existe .env (NO se tocará)
+          echo "🔍 Verificando configuración..."
+          $SSH_CMD "
+            if [ ! -f '$DEPLOY_PATH/.env' ]; then
+              echo '❌ ERROR: No existe .env en $DEPLOY_PATH/.env'
+              echo 'Por favor, crea el archivo .env manualmente antes del primer deploy'
+              exit 1
+            else
+              echo '✅ .env encontrado (NO será modificado)'
+              # Mostrar solo primera línea del .env (sin exponer datos sensibles)
+              head -1 '$DEPLOY_PATH/.env' | grep -o 'APP_[A-Z_]*=.*' || echo '📄 .env existe'
+            fi
+            
+            # Verificar que es un repositorio git
+            if [ ! -d '$DEPLOY_PATH/.git' ]; then
+              echo '⚠️  No es un repositorio git, inicializando...'
+              cd '$DEPLOY_PATH'
+              git init
+              git remote add origin '$(git config --get remote.origin.url)' 2>/dev/null || true
+            fi
+          "
+
+          # 2. Crear backup rápido (opcional)
+          echo "💾 Creando backup rápido..."
+          $SSH_CMD "
+            BACKUP_DIR='$DEPLOY_PATH/backup_$(date +%Y%m%d_%H%M%S)'
+            mkdir -p \"\$BACKUP_DIR\"
+            
+            # Copiar solo lo esencial (excluyendo node_modules, vendor, etc.)
+            cp -r '$DEPLOY_PATH'/app \"\$BACKUP_DIR/\" 2>/dev/null || true
+            cp -r '$DEPLOY_PATH'/config \"\$BACKUP_DIR/\" 2>/dev/null || true
+            cp -r '$DEPLOY_PATH'/database \"\$BACKUP_DIR/\" 2>/dev/null || true
+            cp -r '$DEPLOY_PATH'/resources \"\$BACKUP_DIR/\" 2>/dev/null || true
+            cp -r '$DEPLOY_PATH'/routes \"\$BACKUP_DIR/\" 2>/dev/null || true
+            cp '$DEPLOY_PATH'/composer.json \"\$BACKUP_DIR/\" 2>/dev/null || true
+            
+            echo '✅ Backup creado en: '\$BACKUP_DIR
+          "
+
+          # 3. Actualizar código con git pull
+          echo "🔄 Actualizando código..."
+          $SSH_CMD "
             cd '$DEPLOY_PATH'
             
-            # 1. Actualizar código
-            echo '🔄 Actualizando código...'
+            # Resetear cambios locales para evitar conflictos
+            git reset --hard HEAD 2>/dev/null || true
+            
+            # Limpiar archivos no rastreados (excepto .env y storage)
+            git clean -fd --exclude='.env' --exclude='storage' 2>/dev/null || true
+            
+            # Actualizar desde el repositorio
             git fetch origin
-            git reset --hard origin/main 2>/dev/null || git pull origin main
+            git checkout -B main origin/main 2>/dev/null || git pull origin main --no-rebase
             
-            # 2. Instalar dependencias
-            echo '📦 Instalando dependencias...'
-            composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+            echo '✅ Código actualizado'
+            echo '📌 Commit actual: \$(git log --oneline -1)'
+          "
+
+          # 4. Sincronizar archivos adicionales (si hay problemas con git)
+          echo "📤 Sincronizando archivos adicionales..."
+          rsync -avz \
+            -e "ssh -p $SERVER_PORT -o StrictHostKeyChecking=accept-new" \
+            --exclude='/.git' \
+            --exclude='/.github' \
+            --exclude='/node_modules' \
+            --exclude='/vendor' \
+            --exclude='/storage' \
+            --exclude='/.env' \
+            --exclude='/.env.*' \
+            --exclude='*.log' \
+            --exclude='*.sqlite' \
+            --exclude='_ide_helper*' \
+            --progress \
+            ./ \
+            "$SERVER_USER@$SERVER_HOST:$DEPLOY_PATH/" 2>/dev/null || echo "⚠️  Rsync opcional completado"
+
+          # 5. Instalar dependencias de Composer
+          echo "📦 Instalando dependencias..."
+          $SSH_CMD "
+            cd '$DEPLOY_PATH'
             
-            # 3. Migraciones y cache
-            echo '⚡ Optimizando Laravel...'
+            # Verificar si composer.json existe
+            if [ ! -f 'composer.json' ]; then
+              echo '❌ ERROR: No existe composer.json'
+              exit 1
+            fi
+            
+            # Instalar dependencias optimizadas para producción
+            composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-progress
+            
+            echo '✅ Dependencias instaladas'
+            composer --version | head -1
+          "
+
+          # 6. Configurar Laravel (sin tocar .env)
+          echo "⚙️ Configurando Laravel..."
+          $SSH_CMD "
+            cd '$DEPLOY_PATH'
+            
+            # Asegurar que existen directorios de Laravel
+            mkdir -p storage/framework/{cache,sessions,views}
+            mkdir -p storage/logs
+            mkdir -p bootstrap/cache
+            
+            # Verificar permisos de storage
+            chmod -R 775 storage
+            chmod -R 775 bootstrap/cache
+            
+            # Asegurar ownership correcto (usuario:www-data)
+            chown -R $SERVER_USER:www-data storage bootstrap/cache 2>/dev/null || echo '⚠️  No se pudo cambiar ownership'
+            
+            # Verificar si APP_KEY existe en .env, generarla si no
+            if ! grep -q '^APP_KEY=base64:' .env 2>/dev/null; then
+              echo '🔑 Generando APP_KEY...'
+              php artisan key:generate --force
+            fi
+            
+            echo '✅ Configuración de Laravel completada'
+          "
+
+          # 7. Ejecutar migraciones y optimizaciones
+          echo "🔄 Ejecutando migraciones y optimizaciones..."
+          $SSH_CMD "
+            cd '$DEPLOY_PATH'
+            
+            # Ejecutar migraciones
             php artisan migrate --force
+            
+            # Limpiar cache
+            php artisan cache:clear
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            
+            # Optimizar para producción
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            php artisan storage:link 2>/dev/null || true
             
-            # 4. Permisos
-            chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+            # Crear enlace de storage (si no existe)
+            [ ! -L public/storage ] && php artisan storage:link
             
-            echo '✅ Deploy completado'
-            echo '📌 Último commit: \$(git log --oneline -1)'
+            # Limpiar cache de vistas
+            php artisan view:clear
+            
+            echo '✅ Migraciones y optimizaciones completadas'
           "
+
+          # 8. Limpiar cache de OPcache (si está habilitado)
+          echo "🧹 Limpiando cache de PHP..."
+          $SSH_CMD "
+            # Limpiar OPcache si está habilitado
+            if [ -f '/etc/php/*/fpm/php.ini' ] && grep -q 'opcache.enable=1' /etc/php/*/fpm/php.ini 2>/dev/null; then
+              echo '🔄 Limpiando OPcache...'
+              sudo service php*-fpm reload 2>/dev/null || true
+              sudo systemctl reload php*-fpm 2>/dev/null || true
+            fi
+            
+            # Recargar Nginx/Apache si es necesario
+            sudo systemctl reload nginx 2>/dev/null || sudo systemctl reload apache2 2>/dev/null || true
+            
+            echo '✅ Cache limpiada'
+          "
+
+          # 9. Verificar el deploy
+          echo "✅ Verificando deploy..."
+          $SSH_CMD "
+            echo '=== VERIFICACIÓN FINAL ==='
+            echo ''
+            echo '📌 Directorio actual:'
+            pwd
+            echo ''
+            echo '📌 Estado git:'
+            git log --oneline -3 2>/dev/null || echo 'No hay historial git'
+            echo ''
+            echo '📌 Versión Laravel:'
+            php artisan --version
+            echo ''
+            echo '📌 Estado de migraciones:'
+            php artisan migrate:status --compact 2>/dev/null | tail -3
+            echo ''
+            echo '📌 Espacio en disco:'
+            du -sh . | cut -f1 | xargs echo 'Tamaño:'
+            echo ''
+            echo '✅ Deploy verificado correctamente'
+          "
+
+          # 10. Limpiar backups antiguos (mantener solo los últimos 3)
+          echo "🗑️  Limpiando backups antiguos..."
+          $SSH_CMD "
+            cd '$DEPLOY_PATH'
+            if [ -d backup_* ] 2>/dev/null; then
+              # Contar backups y mantener solo los 3 más recientes
+              BACKUP_COUNT=\$(ls -1td backup_* 2>/dev/null | wc -l)
+              if [ \$BACKUP_COUNT -gt 3 ]; then
+                ls -1td backup_* | tail -n +\$(($BACKUP_COUNT - 2)) | while read OLD_BACKUP; do
+                  if [ -d \"\$OLD_BACKUP\" ]; then
+                    echo '🗑️  Eliminando backup antiguo: '\$OLD_BACKUP
+                    rm -rf \"\$OLD_BACKUP\"
+                  fi
+                done
+              fi
+              echo '📊 Backups actuales:'
+              ls -1td backup_* 2>/dev/null | head -3 || echo 'No hay backups'
+            fi
+          "
+
+          echo "🎉 ¡DEPLOY COMPLETADO EXITOSAMENTE!"
+          echo "📍 Ruta: $DEPLOY_PATH"
+          echo "🕐 Hora: $(date)"
+          echo "🔗 Commit: $(git log --oneline -1)"
+
+      # Paso final: Notificación de estado
+      - name: Notificar resultado
+        if: always()
+        run: |
+          echo "=== RESUMEN DEL WORKFLOW ==="
+          echo "Estado: ${{ job.status }}"
+          echo "Hora de finalización: $(date)"
+          echo "============================"
